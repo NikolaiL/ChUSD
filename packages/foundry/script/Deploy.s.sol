@@ -7,6 +7,7 @@ import { DeployManager } from "./DeployManager.s.sol";
 import { ChUSD } from "../contracts/ChUSD.sol";
 import { Manager } from "../contracts/Manager.sol";
 import { TestManager } from "../test/TestManager.sol";
+import { Vm } from "forge-std/Vm.sol";
 
 /**
  * @notice Main deployment script for all contracts
@@ -38,15 +39,29 @@ contract DeployScript is ScaffoldETHDeploy {
             _chUsd = address(chUsdContract);
             _manager = address(managerContract);
         } else {
-            // For production mode, use the deployment scripts
-            DeployChUsd deployChUsd = new DeployChUsd();
-            address chUsd = deployChUsd.run();
-
-            // Deploy another contract
-            DeployManager deployManager = new DeployManager();
-            address manager = deployManager.run(chUsd, weth, oracle, _testMode);
-
-            ChUSD(chUsd).setManager(manager);
+            // For production mode, deploy both contracts in the same broadcast context
+            vm.startBroadcast();
+            
+            // Deploy ChUSD contract
+            ChUSD chUsdContract = new ChUSD();
+            address chUsd = address(chUsdContract);
+            
+            // Deploy Manager contract
+            Manager managerContract = new Manager(chUsd, weth, oracle);
+            address manager = address(managerContract);
+            
+            // Set manager on ChUSD contract
+            chUsdContract.setManager(manager);
+            
+            vm.stopBroadcast();
+            
+            // Export deployments
+            vm.serializeString("", vm.toString(chUsd), "ChUSD");
+            vm.serializeString("", vm.toString(manager), "Manager");
+            
+            string memory chainIdStr = vm.toString(block.chainid);
+            string memory path = string.concat(vm.projectRoot(), "/deployments/", chainIdStr, ".json");
+            vm.writeJson("", path);
 
             _chUsd = chUsd;
             _manager = manager;

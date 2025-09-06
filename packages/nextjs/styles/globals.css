@@ -92,6 +92,32 @@
     min-height: 100vh;
   }
 
+  /* Prevent scrolling on home page */
+  body.home-page {
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* Custom pulse scale animation */
+  @keyframes pulse-scale {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  /* Fade in animation */
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
   h1,
   h2,
   h3,
