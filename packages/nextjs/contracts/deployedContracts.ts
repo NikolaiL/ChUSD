@@ -1281,7 +1281,1281 @@ const deployedContracts = {
   },
   84532: {
     ChUSD: {
-      address: "0x5b73c5498c1e3b4dba84de0f1833c4a029d90519",
+      address: "0x1c46ee4b5a41f7a6d19af0557d73b671f7f3aa1c",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "DOMAIN_SEPARATOR",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "allowance",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "approve",
+          inputs: [
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "balanceOf",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "burn",
+          inputs: [
+            {
+              name: "_from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "cancelOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "completeOwnershipHandover",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "decimals",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "manager",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "_to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "name",
+          inputs: [],
+          outputs: [
+            {
+              name: "_name",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "nonces",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "owner",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "ownershipHandoverExpiresAt",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "permit",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "value",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "deadline",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "v",
+              type: "uint8",
+              internalType: "uint8",
+            },
+            {
+              name: "r",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "s",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "renounceOwnership",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "requestOwnershipHandover",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "setManager",
+          inputs: [
+            {
+              name: "_manager",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "symbol",
+          inputs: [],
+          outputs: [
+            {
+              name: "_symbol",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "totalSupply",
+          inputs: [],
+          outputs: [
+            {
+              name: "result",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "transfer",
+          inputs: [
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "transferFrom",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "bool",
+              internalType: "bool",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "transferOwnership",
+          inputs: [
+            {
+              name: "newOwner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "event",
+          name: "Approval",
+          inputs: [
+            {
+              name: "owner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "spender",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipHandoverCanceled",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipHandoverRequested",
+          inputs: [
+            {
+              name: "pendingOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "OwnershipTransferred",
+          inputs: [
+            {
+              name: "oldOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "newOwner",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "event",
+          name: "Transfer",
+          inputs: [
+            {
+              name: "from",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "to",
+              type: "address",
+              indexed: true,
+              internalType: "address",
+            },
+            {
+              name: "amount",
+              type: "uint256",
+              indexed: false,
+              internalType: "uint256",
+            },
+          ],
+          anonymous: false,
+        },
+        {
+          type: "error",
+          name: "AllowanceOverflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "AllowanceUnderflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "AlreadyInitialized",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientAllowance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientBalance",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidPermit",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NewOwnerIsZeroAddress",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "NoHandoverRequest",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Permit2AllowanceIsFixedAtInfinity",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "PermitExpired",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TotalSupplyOverflow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "Unauthorized",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 30708794,
+    },
+    Manager: {
+      address: "0xec7fcbf159a5f51250b81503ee7439bc587fe2aa",
+      abi: [
+        {
+          type: "constructor",
+          inputs: [
+            {
+              name: "_chUsd",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_weth",
+              type: "address",
+              internalType: "address payable",
+            },
+            {
+              name: "_oracle",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_redstoneExtractor",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "receive",
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "MIN_COLLATERAL_RATIO",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint64",
+              internalType: "uint64",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "burn",
+          inputs: [
+            {
+              name: "_amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "calculateMintableTokens",
+          inputs: [
+            {
+              name: "_ethAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "_mintableAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "calculateMintableTokensForUser",
+          inputs: [
+            {
+              name: "_user",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_additionalEthAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "_mintableAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "calculateMintableTokensForUserWithPayload",
+          inputs: [
+            {
+              name: "_user",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_additionalEthAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "redstonePayload",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "_mintableAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "calculateMintableTokensWithPayload",
+          inputs: [
+            {
+              name: "_ethAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "redstonePayload",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "_mintableAmount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "chUsd",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract ChUSD",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "collateralRatio",
+          inputs: [
+            {
+              name: "_user",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "_ratio",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "collateralRatioWithPayload",
+          inputs: [
+            {
+              name: "_user",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "redstonePayload",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "_ratio",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "deposit",
+          inputs: [],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "depositAndMint",
+          inputs: [
+            {
+              name: "_amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "depositOf",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "deposit",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "liquidate",
+          inputs: [
+            {
+              name: "_user",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "mint",
+          inputs: [
+            {
+              name: "_amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "mintOf",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "minted",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "oracle",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "quote",
+          inputs: [
+            {
+              name: "_user",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "_addedDeposit",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [
+            {
+              name: "_quoteRatio",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "redstoneExtractor",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract RedstoneExtractor",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "weth",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "contract WETH",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "withdraw",
+          inputs: [
+            {
+              name: "_amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "error",
+          name: "CANT_LIQUIDATE_USER",
+          inputs: [
+            {
+              name: "user",
+              type: "address",
+              internalType: "address",
+            },
+            {
+              name: "collateralRatio",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TOO_LOW_COLLATERAL_RATIO",
+          inputs: [],
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 30708794,
+    },
+    RedstoneExtractor: {
+      address: "0x63a79a78cd06373ed1520cceaa1361326e3a29c5",
+      abi: [
+        {
+          type: "function",
+          name: "aggregateValues",
+          inputs: [
+            {
+              name: "values",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractPrice",
+          inputs: [
+            {
+              name: "feedId",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "redstonePayload",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractPrices",
+          inputs: [
+            {
+              name: "feedIds",
+              type: "bytes32[]",
+              internalType: "bytes32[]",
+            },
+            {
+              name: "redstonePayload",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractTimestampsAndAssertAllAreEqual",
+          inputs: [],
+          outputs: [
+            {
+              name: "extractedTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getAllMockAuthorised",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getAllMockExceptLastOneAuthorised",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getAuthorisedMockSignerIndex",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getAuthorisedSignerIndex",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getDataServiceId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getUniqueSignersThreshold",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "validateTimestamp",
+          inputs: [
+            {
+              name: "receivedTimestampMilliseconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "view",
+        },
+        {
+          type: "error",
+          name: "CalldataMustHaveValidPayload",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CalldataOverOrUnderFlow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CanNotPickMedianOfEmptyArray",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampMustNotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataTimestampCannotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EachSignerMustProvideTheSameValue",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EmptyCalldataPointersArr",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "GetDataServiceIdNotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "IncorrectUnsignedMetadataSize",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientNumberOfUniqueSigners",
+          inputs: [
+            {
+              name: "receivedSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requiredSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidCalldataPointer",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidSignature",
+          inputs: [
+            {
+              name: "signedHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "RedstonePayloadMustHaveAtLeastOneDataPackage",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SignerNotAuthorised",
+          inputs: [
+            {
+              name: "receivedSigner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampIsNotValid",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TooLargeValueByteSize",
+          inputs: [
+            {
+              name: "valueByteSize",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+      deployedOnBlock: 30708794,
+    },
+  },
+  11155111: {
+    ChUSD: {
+      address: "0xd007125b47287a8e240e74196d60ef5a56b12230",
       abi: [
         {
           type: "constructor",
@@ -1834,8 +3108,328 @@ const deployedContracts = {
       ],
       inheritedFunctions: {},
     },
+    RedstoneExtractor: {
+      address: "0xa21a81632813291dc32bb7523c239dee9adee0da",
+      abi: [
+        {
+          type: "function",
+          name: "aggregateValues",
+          inputs: [
+            {
+              name: "values",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractPrice",
+          inputs: [
+            {
+              name: "feedId",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+            {
+              name: "redstonePayload",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractPrices",
+          inputs: [
+            {
+              name: "feedIds",
+              type: "bytes32[]",
+              internalType: "bytes32[]",
+            },
+            {
+              name: "redstonePayload",
+              type: "bytes",
+              internalType: "bytes",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractTimestampsAndAssertAllAreEqual",
+          inputs: [],
+          outputs: [
+            {
+              name: "extractedTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getAllMockAuthorised",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getAllMockExceptLastOneAuthorised",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getAuthorisedMockSignerIndex",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getAuthorisedSignerIndex",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getDataServiceId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getUniqueSignersThreshold",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "validateTimestamp",
+          inputs: [
+            {
+              name: "receivedTimestampMilliseconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          outputs: [],
+          stateMutability: "view",
+        },
+        {
+          type: "error",
+          name: "CalldataMustHaveValidPayload",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CalldataOverOrUnderFlow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CanNotPickMedianOfEmptyArray",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampMustNotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataTimestampCannotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EachSignerMustProvideTheSameValue",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EmptyCalldataPointersArr",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "GetDataServiceIdNotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "IncorrectUnsignedMetadataSize",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientNumberOfUniqueSigners",
+          inputs: [
+            {
+              name: "receivedSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requiredSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidCalldataPointer",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidSignature",
+          inputs: [
+            {
+              name: "signedHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "RedstonePayloadMustHaveAtLeastOneDataPackage",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SignerNotAuthorised",
+          inputs: [
+            {
+              name: "receivedSigner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampIsNotValid",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TooLargeValueByteSize",
+          inputs: [
+            {
+              name: "valueByteSize",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+      ],
+      inheritedFunctions: {},
+    },
     Manager: {
-      address: "0x7fa9385be102ac3eac297483dd6233d62b3e1496",
+      address: "0x4d7282b40761aecd6a24ffbb89c99df0ecf7d778",
       abi: [
         {
           type: "constructor",

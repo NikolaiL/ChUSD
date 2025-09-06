@@ -362,7 +362,7 @@ contract ManagerTest is Test {
         assertEq(manager.depositOf(user1) + manager.depositOf(user2), weth.balanceOf(address(manager)));
     }
 
-    function testCalculateMintableTokens() external {
+    function testCalculateMintableTokens() external view {
         // Test with 1 ETH
         uint256 ethAmount = 1 ether;
         uint256 mintableAmount = manager.calculateMintableTokens(ethAmount);
