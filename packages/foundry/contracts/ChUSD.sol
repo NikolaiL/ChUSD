@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.30;
 
-// Use openzeppelin to inherit battle-tested implementations (ERC20, ERC721, etc)
+/* Solady Libraries */
 import { ERC20 } from "@solady/contracts/tokens/ERC20.sol";
 import { Ownable } from "@solady/contracts/auth/Ownable.sol";
 

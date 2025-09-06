@@ -1,8 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.30;
 
+/* In house contracts */
 import { ChUSD } from "./ChUSD.sol";
+
+/* In house libraries */
 import { CUErrors } from "./libraries/CUErrorrs.sol";
+
+/* Solady Libraries */
 import { WETH } from "@solady/contracts/tokens/WETH.sol";
 import { SafeTransferLib } from "@solady/contracts/utils/SafeTransferLib.sol";
 
