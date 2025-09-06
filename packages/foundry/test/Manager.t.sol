@@ -361,4 +361,49 @@ contract ManagerTest is Test {
         assertEq(weth.balanceOf(address(manager)), depositAmount1 + depositAmount2);
         assertEq(manager.depositOf(user1) + manager.depositOf(user2), weth.balanceOf(address(manager)));
     }
+
+    function testCalculateMintableTokens() external {
+        // Test with 1 ETH
+        uint256 ethAmount = 1 ether;
+        uint256 mintableAmount = manager.calculateMintableTokens(ethAmount);
+
+        // Should be able to mint some amount (exact amount depends on ETH price)
+        assertTrue(mintableAmount > 0);
+
+        // Test with 0 ETH
+        uint256 zeroMintable = manager.calculateMintableTokens(0);
+        assertEq(zeroMintable, 0);
+
+        // Test with 0.5 ETH
+        uint256 halfEthMintable = manager.calculateMintableTokens(0.5 ether);
+        assertTrue(halfEthMintable > 0);
+        assertTrue(halfEthMintable < mintableAmount);
+    }
+
+    function testCalculateMintableTokensForUser() external {
+        // Test with user who has no deposits or mints
+        uint256 additionalEth = 1 ether;
+        uint256 mintableForNewUser = manager.calculateMintableTokensForUser(user1, additionalEth);
+
+        // Should be able to mint some amount
+        assertTrue(mintableForNewUser > 0);
+
+        // Test with 0 additional ETH
+        uint256 zeroAdditional = manager.calculateMintableTokensForUser(user1, 0);
+        assertEq(zeroAdditional, 0);
+
+        // Test with user who already has deposits and mints
+        vm.prank(user1);
+        manager.depositAndMint{ value: 1 ether }(1000e18);
+
+        // Now calculate with additional 0.5 ETH
+        uint256 mintableWithExisting = manager.calculateMintableTokensForUser(user1, 0.5 ether);
+
+        // Should be able to mint additional amount
+        assertTrue(mintableWithExisting > 0);
+
+        // Should be less than what a fresh user could mint with 1.5 ETH total
+        uint256 freshUserMintable = manager.calculateMintableTokens(1.5 ether);
+        assertTrue(mintableWithExisting < freshUserMintable);
+    }
 }
