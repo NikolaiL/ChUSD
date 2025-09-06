@@ -20,7 +20,7 @@ contract DeployScript is ScaffoldETHDeploy {
     address payable weth = payable(0x4200000000000000000000000000000000000006); // WETH on Base Sepolia
     address oracle = address(0x1234567890123456789012345678901234567890); // Replace with actual oracle address
 
-    function run() external returns (address _chUsd, address _manager) {
+    function run() external ScaffoldEthDeployerRunner returns (address _chUsd, address _manager) {
         (_chUsd, _manager) = deploy(oracle, weth, false);
     }
 
@@ -41,7 +41,7 @@ contract DeployScript is ScaffoldETHDeploy {
             _manager = address(managerContract);
         } else {
             // For production mode, deploy both contracts in the same broadcast context
-            vm.startBroadcast();
+            // Note: vm.startBroadcast() and vm.stopBroadcast() are handled by ScaffoldEthDeployerRunner
 
             // Deploy ChUSD contract
             ChUSD chUsdContract = new ChUSD();
@@ -54,15 +54,9 @@ contract DeployScript is ScaffoldETHDeploy {
             // Set manager on ChUSD contract
             chUsdContract.setManager(manager);
 
-            vm.stopBroadcast();
-
-            // Export deployments
-            vm.serializeString("", vm.toString(chUsd), "ChUSD");
-            vm.serializeString("", vm.toString(manager), "Manager");
-
-            string memory chainIdStr = vm.toString(block.chainid);
-            string memory path = string.concat(vm.projectRoot(), "/deployments/", chainIdStr, ".json");
-            vm.writeJson("", path);
+            // Add deployments to the array for proper recording
+            deployments.push(Deployment("ChUSD", chUsd));
+            deployments.push(Deployment("Manager", manager));
 
             _chUsd = chUsd;
             _manager = manager;

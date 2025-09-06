@@ -9,12 +9,16 @@ import { useAccount } from "wagmi";
  * This avoids ethers.js compatibility issues by using direct API calls
  */
 export const useScaffoldWriteContractWithRedstoneManual = () => {
-  const { address } = useAccount();
+  const { address, chain } = useAccount();
   const { generateRedstonePayload, isLoading: isRedstoneLoading } = useRedstoneManual();
   const { writeContractAsync: originalWriteContractAsync } = useScaffoldWriteContract({
     contractName: "Manager",
   });
   const [isLoading, setIsLoading] = useState(false);
+
+  // Debug logging
+  console.log("RedStone hook - Wallet chain ID:", chain?.id);
+  console.log("RedStone hook - Wallet chain name:", chain?.name);
 
   const writeContractAsync = useCallback(
     async (args: { functionName: string; args?: readonly unknown[]; value?: bigint }) => {

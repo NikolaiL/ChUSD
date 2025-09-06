@@ -1,1 +1,5 @@
-""
+{
+  "0x59C07CD8798f2D7c04CEFbeFAaBECa55900b89D6": "ChUSD",
+  "0x8816ff3fc702cf558f7A9FC6aA57Ae9319D9A7F8": "Manager",
+  "networkName": "base-sepolia"
+}

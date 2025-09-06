@@ -13,7 +13,7 @@ import { useScaffoldWriteContractWithRedstoneManual } from "~~/hooks/scaffold-et
 import { useUserInteractionStatus } from "~~/hooks/scaffold-eth/useUserInteractionStatus";
 
 const Home: NextPage = () => {
-  const { isConnected } = useAccount();
+  const { isConnected, address, chain } = useAccount();
   const { hasInteracted } = useUserInteractionStatus();
   const { setFrameReady, isFrameReady } = useMiniKit();
   const [depositAmount, setDepositAmount] = useState("0.1");
@@ -21,6 +21,116 @@ const Home: NextPage = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [sliderValue, setSliderValue] = useState(3);
+
+  // Debug logging
+  console.log("Wallet connected:", isConnected);
+  console.log("Wallet address:", address);
+  console.log("Wallet chain ID:", chain?.id);
+  console.log("Wallet chain name:", chain?.name);
+  console.log("Expected chain ID: 84532 (Base Sepolia)");
+  console.log("Is on correct network:", chain?.id === 84532);
+
+  // Check if wallet is on the wrong network
+  // Override MetaMask's incorrect network detection
+  const [actualChainId, setActualChainId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (isConnected && window.ethereum) {
+      window.ethereum.request({ method: "eth_chainId" }).then((chainId: string) => {
+        const chainIdNumber = parseInt(chainId, 16);
+        setActualChainId(chainIdNumber);
+        console.log("Actual chain ID from MetaMask:", chainIdNumber);
+      });
+    }
+  }, [isConnected]);
+
+  const isWrongNetwork = isConnected && actualChainId !== 84532;
+
+  // Manual network check and force switch
+  useEffect(() => {
+    if (isConnected && window.ethereum) {
+      // Force MetaMask to refresh its network detection
+      const refreshNetwork = () => {
+        window.ethereum.request({ method: "eth_chainId" }).then((chainId: string) => {
+          const chainIdNumber = parseInt(chainId, 16);
+          console.log("Manual chain ID check:", chainIdNumber);
+          console.log("Manual chain ID in hex:", chainId);
+          console.log("Expected: 84532 (0x14a34)");
+
+          // Force switch to Base Sepolia if on wrong network
+          if (chainIdNumber !== 84532) {
+            console.log("🔄 Forcing network switch to Base Sepolia...");
+            console.log("Current chain ID:", chainIdNumber, "Expected: 84532");
+
+            // Try to switch first
+            window.ethereum
+              .request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: "0x14a34" }], // 84532 in hex
+              })
+              .catch((error: any) => {
+                console.log("Switch failed, error code:", error.code);
+                if (error.code === 4902) {
+                  // Chain not added, add it
+                  console.log("➕ Adding Base Sepolia network...");
+                  window.ethereum
+                    .request({
+                      method: "wallet_addEthereumChain",
+                      params: [
+                        {
+                          chainId: "0x14a34",
+                          chainName: "Base Sepolia",
+                          rpcUrls: ["https://sepolia.base.org"],
+                          nativeCurrency: {
+                            name: "Ethereum",
+                            symbol: "ETH",
+                            decimals: 18,
+                          },
+                          blockExplorerUrls: ["https://sepolia.basescan.org"],
+                        },
+                      ],
+                    })
+                    .then(() => {
+                      console.log("✅ Base Sepolia network added successfully");
+                      // Try to switch again after adding
+                      window.ethereum.request({
+                        method: "wallet_switchEthereumChain",
+                        params: [{ chainId: "0x14a34" }],
+                      });
+                    })
+                    .catch((addError: any) => {
+                      console.error("❌ Failed to add Base Sepolia network:", addError);
+                      console.log("This might be due to MetaMask caching. Try manually adding the network.");
+                    });
+                } else if (error.code === 4900) {
+                  // User rejected the request
+                  console.log("User rejected network switch");
+                } else {
+                  console.error("Network switch error:", error);
+                  console.log("Error details:", error.message);
+                }
+              });
+          }
+        });
+      };
+
+      // Initial check
+      refreshNetwork();
+
+      // Listen for network changes
+      const handleChainChanged = (chainId: string) => {
+        console.log("Chain changed to:", parseInt(chainId, 16));
+        refreshNetwork();
+      };
+
+      window.ethereum.on("chainChanged", handleChainChanged);
+
+      // Cleanup
+      return () => {
+        window.ethereum.removeListener("chainChanged", handleChainChanged);
+      };
+    }
+  }, [isConnected]);
 
   // RedStone manual payload contract write hook
   const { writeContractAsync: writeManagerAsync, isLoading: isManagerLoading } =
@@ -31,7 +141,7 @@ const Home: NextPage = () => {
 
   // Get user's ETH balance
   const { data: balance } = useBalance({
-    address: isConnected ? undefined : undefined,
+    address: address,
   });
 
   // Validation states
@@ -386,6 +496,8 @@ const Home: NextPage = () => {
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-500"></div>
                           <span className="text-sm text-gray-500">Calculating...</span>
                         </div>
+                      ) : !isConnected ? (
+                        <div className="text-sm text-gray-500">Connect wallet</div>
                       ) : mintableTokens ? (
                         <div>
                           <div className="text-lg font-bold text-yellow-700">
@@ -394,16 +506,157 @@ const Home: NextPage = () => {
                           <div className="text-xs text-gray-500">≈ ${(Number(mintableTokens) / 1e18).toFixed(2)}</div>
                         </div>
                       ) : (
-                        <div className="text-sm text-gray-500">Connect wallet</div>
+                        <div className="text-sm text-gray-500">Calculating...</div>
                       )}
                     </div>
                   </div>
                 </div>
 
+                {/* Network Switch Button */}
+                {isWrongNetwork && (
+                  <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-sm font-medium text-red-800">⚠️ Wrong Network Detected</h3>
+                        <p className="text-xs text-red-700 mt-1">
+                          Current: Chain ID {actualChainId || chain?.id} ({chain?.name})<br />
+                          Required: Chain ID 84532 (Base Sepolia)
+                          <br />
+                          <span className="text-yellow-600">MetaMask Bug: Showing wrong Chain ID in UI</span>
+                        </p>
+                      </div>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => {
+                            if (window.ethereum) {
+                              window.ethereum
+                                .request({
+                                  method: "wallet_switchEthereumChain",
+                                  params: [{ chainId: "0x14a34" }],
+                                })
+                                .catch((error: any) => {
+                                  if (error.code === 4902) {
+                                    window.ethereum.request({
+                                      method: "wallet_addEthereumChain",
+                                      params: [
+                                        {
+                                          chainId: "0x14a34",
+                                          chainName: "Base Sepolia",
+                                          rpcUrls: ["https://sepolia.base.org"],
+                                          nativeCurrency: {
+                                            name: "Ethereum",
+                                            symbol: "ETH",
+                                            decimals: 18,
+                                          },
+                                          blockExplorerUrls: ["https://sepolia.basescan.org"],
+                                        },
+                                      ],
+                                    });
+                                  }
+                                });
+                            }
+                          }}
+                          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                        >
+                          Auto Switch
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Manual instructions
+                            alert(`Manual Setup Instructions:
+1. Open MetaMask
+2. Click the network dropdown (top of MetaMask)
+3. Click "Add Network" → "Add a network manually"
+4. Enter these details:
+   - Network Name: Base Sepolia
+   - RPC URL: https://sepolia.base.org
+   - Chain ID: 84532 (0x14a34)
+   - Currency Symbol: ETH
+   - Block Explorer: https://sepolia.basescan.org
+5. Click "Save" and switch to Base Sepolia
+
+If you still get Chain ID 84610 error:
+- Delete any existing Base Sepolia network from MetaMask
+- Clear MetaMask cache (Settings → Advanced → Reset Account)
+- Try adding the network again`);
+                          }}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                        >
+                          Manual Setup
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Force clear and re-add network
+                            if (window.ethereum) {
+                              // Try to remove existing network first
+                              window.ethereum
+                                .request({
+                                  method: "wallet_removeEthereumChain",
+                                  params: [{ chainId: "0x14a34" }],
+                                })
+                                .catch(() => {
+                                  // Network might not exist, that's okay
+                                  console.log("No existing network to remove");
+                                })
+                                .finally(() => {
+                                  // Add the network fresh
+                                  window.ethereum
+                                    .request({
+                                      method: "wallet_addEthereumChain",
+                                      params: [
+                                        {
+                                          chainId: "0x14a34",
+                                          chainName: "Base Sepolia",
+                                          rpcUrls: ["https://sepolia.base.org"],
+                                          nativeCurrency: {
+                                            name: "Ethereum",
+                                            symbol: "ETH",
+                                            decimals: 18,
+                                          },
+                                          blockExplorerUrls: ["https://sepolia.basescan.org"],
+                                        },
+                                      ],
+                                    })
+                                    .then(() => {
+                                      console.log("✅ Base Sepolia network added fresh");
+                                      // Try to switch
+                                      window.ethereum.request({
+                                        method: "wallet_switchEthereumChain",
+                                        params: [{ chainId: "0x14a34" }],
+                                      });
+                                    })
+                                    .catch((error: any) => {
+                                      console.error("❌ Failed to add fresh network:", error);
+                                    });
+                                });
+                            }
+                          }}
+                          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                        >
+                          Force Reset
+                        </button>
+                        <button
+                          onClick={() => {
+                            // Force MetaMask to refresh network detection
+                            if (window.ethereum) {
+                              console.log("🔄 Forcing MetaMask network refresh...");
+                              // Force a page reload to refresh MetaMask's network detection
+                              window.location.reload();
+                            }
+                          }}
+                          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+                        >
+                          Refresh Page
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Deposit Button */}
                 <button
                   onClick={handleDeposit}
-                  disabled={!isConnected || isDepositing || isManagerLoading || !isValidAmount}
+                  disabled={!isConnected || isDepositing || isManagerLoading || !isValidAmount || isWrongNetwork}
                   className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 disabled:transform-none disabled:cursor-not-allowed"
                 >
                   {isDepositing || isManagerLoading ? (
