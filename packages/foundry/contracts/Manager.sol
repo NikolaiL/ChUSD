@@ -15,6 +15,12 @@ import { ManagerBase } from "./ManagerBase.sol";
  *
  */
 contract Manager is ManagerBase, MainDemoConsumerBase {
+    //     ______                 __                  __
+    //    / ____/___  ____  _____/ /________  _______/ /_____  _____
+    //   / /   / __ \/ __ \/ ___/ __/ ___/ / / / ___/ __/ __ \/ ___/
+    //  / /___/ /_/ / / / (__  ) /_/ /  / /_/ / /__/ /_/ /_/ / /
+    //  \____/\____/_/ /_/____/\__/_/   \__,_/\___/\__/\____/_/
+
     /**
      * @notice
      *  Constructor for Manager contract
@@ -28,6 +34,12 @@ contract Manager is ManagerBase, MainDemoConsumerBase {
         // Constructor delegates to ManagerBase constructor
     }
 
+    //     ____      __                        __   ______                 __  _
+    //    /  _/___  / /____  _________  ____ _/ /  / ____/_  ______  _____/ /_(_)___  ____  _____
+    //    / // __ \/ __/ _ \/ ___/ __ \/ __ `/ /  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
+    //  _/ // / / / /_/  __/ /  / / / / /_/ / /  / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
+    // /___/_/ /_/\__/\___/_/  /_/ /_/\__,_/_/  /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
+
     /**
      * @notice
      *  Gets the current ETH price from Redstone oracle
@@ -39,6 +51,12 @@ contract Manager is ManagerBase, MainDemoConsumerBase {
         // Get ETH price from Redstone oracle
         return getOracleNumericValueFromTxMsg(bytes32("ETH"));
     }
+
+    //     ______     __                        __   ______                 __  _
+    //    / ____/  __/ /____  _________  ____ _/ /  / ____/_  ______  _____/ /_(_)___  ____  _____
+    //   / __/ | |/_/ __/ _ \/ ___/ __ \/ __ `/ /  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
+    //  / /____>  </ /_/  __/ /  / / / / /_/ / /  / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
+    // /_____/_/|_|\__/\___/_/  /_/ /_/\__,_/_/  /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
 
     /**
      * @notice
