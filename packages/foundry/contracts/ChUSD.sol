@@ -70,17 +70,18 @@ contract ChUSD is ERC20, Ownable {
 
     /**
      * @notice
-     *  Constructor for ChUSD contract, sets the manager and makes the contract
-     * the ownner of this contract
-     *
-     * @param _manager Manager contracts address
+     *  Constructor for ChUSD contract
      *
      */
-    constructor(address _manager) {
+    constructor() {
+        _initializeOwner(msg.sender);
+    }
+
+    function setManager(address _manager) external onlyOwner {
         // Set the manager
         manager = _manager;
         // Make it the ower
-        _initializeOwner(manager);
+        transferOwnership(_manager);
     }
 
     function name() public view override returns (string memory _name) {
