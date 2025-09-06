@@ -62,6 +62,16 @@ const Home: NextPage = () => {
                 tab.
               </p>
             </div>
+            <div className="flex flex-col bg-yellow-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl border-2 border-yellow-300">
+              <span className="text-4xl mb-2">⚡</span>
+              <p>
+                Check out the{" "}
+                <Link href="/pikachu" passHref className="link text-yellow-600 font-semibold">
+                  Pikachu Page
+                </Link>{" "}
+                for a fun deposit experience!
+              </p>
+            </div>
           </div>
         </div>
       </div>
