@@ -1,80 +1,32 @@
-# 🏗 Scaffold-ETH 2
+# # Pika chUSD
+[Website]()
+[GitHub]()
+[Submission]()
+[Slide deck]()
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+![Pikachu](images/excited.png)
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts...
-
-⚙️ Built using NextJS, RainbowKit, Foundry, Wagmi, Viem, and Typescript.
-
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
-
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
-
-## Requirements
-
-Before you begin, you need to install the following tools:
-
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-
-## Quickstart
-
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install dependencies if it was skipped in CLI:
-
-```
-cd my-dapp-example
-yarn install
-```
-
-2. Run a local network in the first terminal:
-
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Foundry. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/foundry/foundry.toml`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
-```
-
-This command deploys a test smart contract to the local network. The contract is located in `packages/foundry/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/foundry/script` to deploy the contract to the network. You can also customize the deploy script.
-
-4. On a third terminal, start your NextJS app:
-
-```
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-Run smart contract test with `yarn foundry:test`
-
-- Edit your smart contracts in `packages/foundry/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/foundry/script`
+Pika chUSD is a Base miniapp game that uses ETH as collateral to mint chUSD stablecoin. The collateral ratio of ETH determines Pikachu's mood, which changes based on the health factor of the collateral ratio of ETH/chUSD. As a user, you are responsible for keeping Pikachu happy; if the collateral ratio drops, it will negatively affect Pikachu's mood and expose you to liquidation risk.
 
 
-## Documentation
+How it works:
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+- After depositing ETH, the user will receive chUSD and the game will display the default state of Pikachu's mood
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+- Pikatchu's mood changes based on the price of ETH as collateral 
 
-## Contributing to Scaffold-ETH 2
+- As user you are responsible for keeping Pikachu in a happy mood and avoiding liquidation of your collateral 
 
-We welcome contributions to Scaffold-ETH 2!
+- The game itself has five stages of Pikachu's happiness based on the liquidation risk of your collateral
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+
+## Bounties 
+RedStone 
+We are using RedStone stack for BaseETH price feed changes between BaseETH and chUSD to reflect changes of the Pikachu character
+Base 
+We are using BaseETH as collateral for the game and deployed the game as Base miniapp 
+BuidlGuidl
+We are using ScaffoldETH stack as front end and back end of the game itself 
+
+## Next steps
+We are planning to enable user to earn yield on chUSD stablecoin as well enable notifications when the price changes to avoid user to get REKT (liquidated)
