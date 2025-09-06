@@ -7,14 +7,44 @@ import {WETH} from "@solady/contracts/tokens/WETH.sol";
 import {SafeTransferLib} from "@solady/contracts/utils/SafeTransferLib.sol";
 import {MainDemoConsumerBase} from "@redstone-finance/evm-connector/contracts/data-services/MainDemoConsumerBase.sol";
 
+/**
+ * @title Manager
+ * @notice contract responsible of deposits, liquidations and collateral ratios
+ * @author https://x.com/0xjsieth
+ *
+ */
 contract Manager is MainDemoConsumerBase {
     using SafeTransferLib for address;
+
+    //     _____ __        __
+    //    / ___// /_____ _/ /____  _____
+    //    \__ \/ __/ __ `/ __/ _ \/ ___/
+    //   ___/ / /_/ /_/ / /_/  __(__  )
+    //  /____/\__/\__,_/\__/\___/____/
+
+    // Minimal collateral ration
     uint64 public constant MIN_COLLATERAL_RATIO = 1.5e18;
+
+    // ChUsd contract instance
     ChUSD public chUsd;
+
+    // Weth instance
     WETH public weth;
+
+    // Oracle address
     address public oracle;
+
+    // Mapping to keep track of users deposits
     mapping(address user => uint256 deposit) public depositOf;
+
+    // Mapping to keep track of users mints
     mapping(address user => uint256 minted) public mintOf;
+
+    constructor(address _chUsd, address payable _weth, address _oracle) {
+        chUsd = ChUSD(_chUsd);
+        weth = WETH(_weth);
+        oracle = _oracle;
+    }
 
     function deposit() public payable {
         weth.deposit{value: msg.value}();
@@ -57,7 +87,8 @@ contract Manager is MainDemoConsumerBase {
     ) public view returns (uint256 _ratio) {
         uint256 minted = mintOf[_user];
         if (minted == 0) return type(uint256).max;
-        uint256 totalValue = address2deposit[user] * (getOracleNumericValueFromTxMsg(bytes32("ETH") * 1e10) / 1e18;
+        uint256 totalValue = (depositOf[_user] *
+            (getOracleNumericValueFromTxMsg(bytes32("ETH")) * 1e10)) / 1e18;
         _ratio = totalValue / minted;
     }
 }
