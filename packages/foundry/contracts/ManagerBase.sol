@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0
 pragma solidity 0.8.30;
 
-import {ChUSD} from "./ChUSD.sol";
-import {CUErrors} from "./libraries/CUErrorrs.sol";
-import {WETH} from "@solady/contracts/tokens/WETH.sol";
-import {SafeTransferLib} from "@solady/contracts/utils/SafeTransferLib.sol";
+import { ChUSD } from "./ChUSD.sol";
+import { CUErrors } from "./libraries/CUErrorrs.sol";
+import { WETH } from "@solady/contracts/tokens/WETH.sol";
+import { SafeTransferLib } from "@solady/contracts/utils/SafeTransferLib.sol";
 
 /**
  * @title ManagerBase
@@ -12,7 +12,7 @@ import {SafeTransferLib} from "@solady/contracts/utils/SafeTransferLib.sol";
  * @author https://x.com/0xjsieth
  *
  */
-abstract contract ManagerBase{
+abstract contract ManagerBase {
     using SafeTransferLib for address;
 
     //     _____ __        __
@@ -125,8 +125,9 @@ abstract contract ManagerBase{
         // Update user's deposit balance
         depositOf[msg.sender] -= _amount;
         // Check if collateral ratio is still sufficient
-        if (collateralRatio(msg.sender) < MIN_COLLATERAL_RATIO)
+        if (collateralRatio(msg.sender) < MIN_COLLATERAL_RATIO) {
             revert CUErrors.TOO_LOW_COLLATERAL_RATIO();
+        }
         // Convert WETH back to ETH
         weth.withdraw(_amount);
         // Transfer ETH to user
@@ -144,8 +145,9 @@ abstract contract ManagerBase{
         // Get the user's current collateral ratio
         uint256 userCollateralRatio = collateralRatio(_user);
         // Check if user can be liquidated
-        if (userCollateralRatio > MIN_COLLATERAL_RATIO)
+        if (userCollateralRatio > MIN_COLLATERAL_RATIO) {
             revert CUErrors.CANT_LIQUIDATE_USER(_user, userCollateralRatio);
+        }
         // Burn the user's minted ChUSD
         chUsd.burn(msg.sender, mintOf[_user]);
         // Convert user's WETH to ETH
@@ -167,15 +169,9 @@ abstract contract ManagerBase{
      * @return _quoteRatio The projected collateral ratio
      *
      */
-    function quote(
-        address _user,
-        uint256 _addedDeposit
-    ) external view returns (uint256 _quoteRatio) {
+    function quote(address _user, uint256 _addedDeposit) external view returns (uint256 _quoteRatio) {
         // Calculate the collateral ratio with the additional deposit
-        _quoteRatio = _collateralRatio(
-            (mintOf[_user] + _addedDeposit),
-            depositOf[_user]
-        );
+        _quoteRatio = _collateralRatio((mintOf[_user] + _addedDeposit), depositOf[_user]);
     }
 
     //      ____        __    ___         ______                 __  _
@@ -195,8 +191,9 @@ abstract contract ManagerBase{
         // Update user's minted balance
         mintOf[msg.sender] += _amount;
         // Check if collateral ratio is sufficient
-        if (collateralRatio(msg.sender) < MIN_COLLATERAL_RATIO)
+        if (collateralRatio(msg.sender) < MIN_COLLATERAL_RATIO) {
             revert CUErrors.TOO_LOW_COLLATERAL_RATIO();
+        }
         // Mint the ChUSD tokens
         chUsd.mint(msg.sender, _amount);
     }
@@ -210,9 +207,7 @@ abstract contract ManagerBase{
      * @return _ratio The collateral ratio (deposited value / minted value)
      *
      */
-    function collateralRatio(
-        address _user
-    ) public view returns (uint256 _ratio) {
+    function collateralRatio(address _user) public view returns (uint256 _ratio) {
         // Calculate and return the collateral ratio
         _ratio = _collateralRatio(mintOf[_user], depositOf[_user]);
     }
@@ -233,15 +228,11 @@ abstract contract ManagerBase{
      * @return _ratio The calculated collateral ratio
      *
      */
-    function _collateralRatio(
-        uint256 _minted,
-        uint256 _deposited
-    ) internal view returns (uint256 _ratio) {
+    function _collateralRatio(uint256 _minted, uint256 _deposited) internal view returns (uint256 _ratio) {
         // If no ChUSD minted, return max ratio
         if (_minted == 0) return type(uint256).max;
         // Calculate total value using oracle price
-        uint256 totalValue = (_deposited *
-            (_getEthPrice() * 1e10)) / 1e18;
+        uint256 totalValue = (_deposited * (_getEthPrice() * 1e10)) / 1e18;
         // Return the ratio (multiply by 1e18 to maintain precision)
         _ratio = (totalValue * 1e18) / _minted;
     }
@@ -256,10 +247,10 @@ abstract contract ManagerBase{
      */
     function _deposit(uint256 _value, address _sender) internal {
         // Convert ETH to WETH
-        weth.deposit{value: _value}();
+        weth.deposit{ value: _value }();
         // Update user's deposit balance
         depositOf[_sender] += _value;
     }
 
-    function _getEthPrice() internal virtual view returns (uint256);
+    function _getEthPrice() internal view virtual returns (uint256);
 }

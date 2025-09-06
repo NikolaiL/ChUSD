@@ -5,8 +5,8 @@ import "forge-std/Test.sol";
 import "../contracts/ChUSD.sol";
 import "./TestManager.sol";
 import "../contracts/libraries/CUErrorrs.sol";
-import {WETH} from "@solady/contracts/tokens/WETH.sol";
-import {DeployScript} from "../script/Deploy.s.sol";
+import { WETH } from "@solady/contracts/tokens/WETH.sol";
+import { DeployScript } from "../script/Deploy.s.sol";
 
 /**
  * @title ManagerTest
@@ -43,12 +43,12 @@ contract ManagerTest is Test {
         (chUsdAddress, managerAddress) = deployScript.deploy(address(0x1234), payable(address(weth)), true);
         chUsd = ChUSD(chUsdAddress);
         manager = TestManager(payable(managerAddress));
-        
+
         // Set up accounts
         user1 = makeAddr("user1");
         user2 = makeAddr("user2");
         liquidator = makeAddr("liquidator");
-        
+
         // Give users some ETH
         vm.deal(user1, 100 ether);
         vm.deal(user2, 100 ether);
@@ -61,7 +61,6 @@ contract ManagerTest is Test {
     //  / /_/ / / / / / /_/ /  / /_/ /| |/ |/ / / / /  __/ /     / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
     //  \____/_/ /_/_/\__, /   \____/ |__/|__/_/ /_/\___/_/     /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
     //
-
     function testInitialState() external view {
         // Test initial state
         assertEq(address(manager.chUsd()), address(chUsd));
@@ -73,10 +72,10 @@ contract ManagerTest is Test {
     function testDeposit() external {
         // Test basic deposit functionality
         uint256 _depositAmount = 1 ether;
-        
+
         vm.prank(user1);
-        manager.deposit{value: _depositAmount}();
-        
+        manager.deposit{ value: _depositAmount }();
+
         assertEq(manager.depositOf(user1), _depositAmount);
         assertEq(weth.balanceOf(address(manager)), _depositAmount);
     }
@@ -85,10 +84,10 @@ contract ManagerTest is Test {
         // Test deposit and mint in one transaction
         uint256 _depositAmount = 1 ether;
         uint256 _mintAmount = 1000e18;
-        
+
         vm.prank(user1);
-        manager.depositAndMint{value: _depositAmount}(_mintAmount);
-        
+        manager.depositAndMint{ value: _depositAmount }(_mintAmount);
+
         // Verify the deposit and mint worked
         assertEq(manager.depositOf(user1), _depositAmount);
         assertEq(manager.mintOf(user1), _mintAmount);
@@ -99,15 +98,15 @@ contract ManagerTest is Test {
         // Test minting after deposit
         uint256 _depositAmount = 1 ether;
         uint256 _mintAmount = 500e18; // Reduced amount to ensure proper collateral ratio
-        
+
         // First deposit
         vm.prank(user1);
-        manager.deposit{value: _depositAmount}();
-        
+        manager.deposit{ value: _depositAmount }();
+
         // Then mint
         vm.prank(user1);
         manager.mint(_mintAmount);
-        
+
         assertEq(manager.mintOf(user1), _mintAmount);
         assertEq(chUsd.balanceOf(user1), _mintAmount);
     }
@@ -116,11 +115,11 @@ contract ManagerTest is Test {
         // Test minting with insufficient collateral
         uint256 _depositAmount = 0.5 ether; // $1000 at $2000/ETH
         uint256 _mintAmount = 1000e18; // $1000 ChUSD
-        
+
         // Deposit
         vm.prank(user1);
-        manager.deposit{value: _depositAmount}();
-        
+        manager.deposit{ value: _depositAmount }();
+
         // Try to mint - should fail due to insufficient collateral
         vm.prank(user1);
         vm.expectRevert(CUErrors.TOO_LOW_COLLATERAL_RATIO.selector);
@@ -132,17 +131,17 @@ contract ManagerTest is Test {
         uint256 depositAmount = 1 ether;
         uint256 mintAmount = 1000e18;
         uint256 burnAmount = 500e18;
-        
+
         // Note: Oracle price handling is complex with Redstone, skipping for now
-        
+
         // Deposit and mint
         vm.prank(user1);
-        manager.depositAndMint{value: depositAmount}(mintAmount);
-        
+        manager.depositAndMint{ value: depositAmount }(mintAmount);
+
         // Burn
         vm.prank(user1);
         manager.burn(burnAmount);
-        
+
         assertEq(manager.mintOf(user1), mintAmount - burnAmount);
         assertEq(chUsd.balanceOf(user1), mintAmount - burnAmount);
     }
@@ -152,16 +151,16 @@ contract ManagerTest is Test {
         uint256 _depositAmount = 1 ether;
         uint256 _mintAmount = 500e18; // Reduced to allow withdrawal
         uint256 _withdrawAmount = 0.2 ether; // Small withdrawal to maintain collateral ratio
-        
+
         // Deposit and mint
         vm.prank(user1);
-        manager.depositAndMint{value: _depositAmount}(_mintAmount);
-        
+        manager.depositAndMint{ value: _depositAmount }(_mintAmount);
+
         // Withdraw
         uint256 _initialBalance = user1.balance;
         vm.prank(user1);
         manager.withdraw(_withdrawAmount);
-        
+
         assertEq(manager.depositOf(user1), _depositAmount - _withdrawAmount);
         assertEq(user1.balance, _initialBalance + _withdrawAmount);
     }
@@ -171,11 +170,11 @@ contract ManagerTest is Test {
         uint256 _depositAmount = 1 ether;
         uint256 _mintAmount = 1000e18;
         uint256 _withdrawAmount = 0.8 ether; // Too much
-        
+
         // Deposit and mint
         vm.prank(user1);
-        manager.depositAndMint{value: _depositAmount}(_mintAmount);
-        
+        manager.depositAndMint{ value: _depositAmount }(_mintAmount);
+
         // Try to withdraw too much
         vm.prank(user1);
         vm.expectRevert(CUErrors.TOO_LOW_COLLATERAL_RATIO.selector);
@@ -193,11 +192,11 @@ contract ManagerTest is Test {
         // Test trying to liquidate a healthy user
         uint256 _depositAmount = 1 ether;
         uint256 _mintAmount = 500e18; // Reduced to ensure healthy ratio
-        
+
         // User deposits and mints
         vm.prank(user1);
-        manager.depositAndMint{value: _depositAmount}(_mintAmount);
-        
+        manager.depositAndMint{ value: _depositAmount }(_mintAmount);
+
         // Try to liquidate healthy user
         vm.prank(liquidator);
         vm.expectRevert();
@@ -208,13 +207,13 @@ contract ManagerTest is Test {
         // Test collateral ratio calculation
         uint256 depositAmount = 1 ether;
         uint256 mintAmount = 1000e18;
-        
+
         // Note: Oracle price handling is complex with Redstone, skipping for now
-        
+
         // User deposits and mints
         vm.prank(user1);
-        manager.depositAndMint{value: depositAmount}(mintAmount);
-        
+        manager.depositAndMint{ value: depositAmount }(mintAmount);
+
         // Check collateral ratio (should be 2.0)
         uint256 ratio = manager.collateralRatio(user1);
         assertEq(ratio, 2e18);
@@ -225,15 +224,15 @@ contract ManagerTest is Test {
         uint256 _depositAmount = 1 ether;
         uint256 _mintAmount = 1000e18;
         uint256 _additionalDeposit = 0.5 ether;
-        
+
         // User deposits and mints
         vm.prank(user1);
-        manager.depositAndMint{value: _depositAmount}(_mintAmount);
-        
+        manager.depositAndMint{ value: _depositAmount }(_mintAmount);
+
         // Get quote for additional deposit
         uint256 _quoteRatio = manager.quote(user1, _additionalDeposit);
         uint256 _currentRatio = manager.collateralRatio(user1);
-        
+
         // Should be approximately equal or higher (allow for small precision differences)
         assertGe(_quoteRatio, _currentRatio - 1e15); // Allow 0.001e18 tolerance
     }
@@ -247,11 +246,11 @@ contract ManagerTest is Test {
     function testFuzzDeposit(uint256 amount) public {
         // Fuzz test deposit with random amounts
         vm.assume(amount > 0 && amount < 100 ether);
-        
+
         vm.deal(user1, amount);
         vm.prank(user1);
-        manager.deposit{value: amount}();
-        
+        manager.deposit{ value: amount }();
+
         assertEq(manager.depositOf(user1), amount);
     }
 
@@ -259,13 +258,13 @@ contract ManagerTest is Test {
         // Fuzz test minting with random amounts
         vm.assume(depositAmount > 0 && depositAmount < 100 ether);
         vm.assume(mintAmount > 0 && mintAmount < type(uint128).max);
-        
+
         // Note: Oracle price handling is complex with Redstone, skipping for now
-        
+
         vm.deal(user1, depositAmount);
         vm.prank(user1);
-        manager.deposit{value: depositAmount}();
-        
+        manager.deposit{ value: depositAmount }();
+
         // Try to mint - may succeed or fail based on collateral ratio
         vm.prank(user1);
         try manager.mint(mintAmount) {
@@ -283,20 +282,20 @@ contract ManagerTest is Test {
         vm.assume(depositAmount > 0 && depositAmount < 100 ether);
         vm.assume(mintAmount > 0 && mintAmount < type(uint128).max);
         vm.assume(burnAmount <= mintAmount);
-        
+
         // Note: Oracle price handling is complex with Redstone, skipping for now
-        
+
         vm.deal(user1, depositAmount);
         vm.prank(user1);
-        manager.deposit{value: depositAmount}();
-        
+        manager.deposit{ value: depositAmount }();
+
         // Try to mint first
         vm.prank(user1);
         try manager.mint(mintAmount) {
             // If minting succeeded, try burning
             vm.prank(user1);
             manager.burn(burnAmount);
-            
+
             assertEq(manager.mintOf(user1), mintAmount - burnAmount);
             assertEq(chUsd.balanceOf(user1), mintAmount - burnAmount);
         } catch {
@@ -314,13 +313,13 @@ contract ManagerTest is Test {
         // Test that collateral ratio is always >= MIN_COLLATERAL_RATIO after operations
         uint256 depositAmount = 1 ether;
         uint256 mintAmount = 1000e18;
-        
+
         // Note: Oracle price handling is complex with Redstone, skipping for now
-        
+
         // User deposits and mints
         vm.prank(user1);
-        manager.depositAndMint{value: depositAmount}(mintAmount);
-        
+        manager.depositAndMint{ value: depositAmount }(mintAmount);
+
         // Check that collateral ratio is sufficient
         uint256 ratio = manager.collateralRatio(user1);
         assertGe(ratio, manager.MIN_COLLATERAL_RATIO());
@@ -331,15 +330,15 @@ contract ManagerTest is Test {
         uint256 _depositAmount = 1 ether;
         uint256 _mintAmount1 = 1000e18;
         uint256 _mintAmount2 = 1000e18; // Reduced to ensure proper collateral ratio
-        
+
         // User1 deposits and mints
         vm.prank(user1);
-        manager.depositAndMint{value: _depositAmount}(_mintAmount1);
-        
+        manager.depositAndMint{ value: _depositAmount }(_mintAmount1);
+
         // User2 deposits and mints
         vm.prank(user2);
-        manager.depositAndMint{value: _depositAmount}(_mintAmount2);
-        
+        manager.depositAndMint{ value: _depositAmount }(_mintAmount2);
+
         // Check total supply
         assertEq(chUsd.totalSupply(), _mintAmount1 + _mintAmount2);
         assertEq(manager.mintOf(user1) + manager.mintOf(user2), chUsd.totalSupply());
@@ -349,15 +348,15 @@ contract ManagerTest is Test {
         // Test that total WETH balance equals sum of all deposits
         uint256 depositAmount1 = 1 ether;
         uint256 depositAmount2 = 2 ether;
-        
+
         // User1 deposits
         vm.prank(user1);
-        manager.deposit{value: depositAmount1}();
-        
+        manager.deposit{ value: depositAmount1 }();
+
         // User2 deposits
         vm.prank(user2);
-        manager.deposit{value: depositAmount2}();
-        
+        manager.deposit{ value: depositAmount2 }();
+
         // Check WETH balance
         assertEq(weth.balanceOf(address(manager)), depositAmount1 + depositAmount2);
         assertEq(manager.depositOf(user1) + manager.depositOf(user2), weth.balanceOf(address(manager)));

@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 import "./DeployHelpers.s.sol";
 
 import "../contracts/Manager.sol";
-import {TestManager} from "../test/TestManager.sol";
+import { TestManager } from "../test/TestManager.sol";
 
 /**
  * @notice Deploy script for YourContract contract
@@ -26,12 +26,11 @@ contract DeployManager is ScaffoldETHDeploy {
      *      - Setup correct `deployer` account and fund it
      *      - Export contract addresses & ABIs to `nextjs` packages
      */
-    function run(
-        address _chUsd,
-        address payable _weth,
-        address _oracle,
-        bool _testMode
-    ) external ScaffoldEthDeployerRunner returns (address _manager) {
+    function run(address _chUsd, address payable _weth, address _oracle, bool _testMode)
+        external
+        ScaffoldEthDeployerRunner
+        returns (address _manager)
+    {
         if (_testMode) {
             _manager = address(new TestManager(_chUsd, _weth, _oracle));
         } else {

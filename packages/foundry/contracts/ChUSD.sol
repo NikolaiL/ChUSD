@@ -2,8 +2,8 @@
 pragma solidity 0.8.30;
 
 // Use openzeppelin to inherit battle-tested implementations (ERC20, ERC721, etc)
-import {ERC20} from "@solady/contracts/tokens/ERC20.sol";
-import {Ownable} from "@solady/contracts/auth/Ownable.sol";
+import { ERC20 } from "@solady/contracts/tokens/ERC20.sol";
+import { Ownable } from "@solady/contracts/auth/Ownable.sol";
 
 // quu..__
 //  $$$b  `---.__
@@ -129,7 +129,7 @@ contract ChUSD is ERC20, Ownable {
      * @param _to The address to mint tokens to
      *
      */
-    function mint(address _to, uint _amount) public onlyOwner {
+    function mint(address _to, uint256 _amount) public onlyOwner {
         // Mint the tokens to the specified address
         _mint(_to, _amount);
     }
@@ -142,7 +142,7 @@ contract ChUSD is ERC20, Ownable {
      * @param _amount The amount of tokens to burn
      *
      */
-    function burn(address _from, uint _amount) public onlyOwner {
+    function burn(address _from, uint256 _amount) public onlyOwner {
         // Burn the tokens from the specified address
         _burn(_from, _amount);
     }
