@@ -8,7 +8,7 @@ import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useBalance } from "wagmi";
 import { useMintableTokens } from "~~/hooks/scaffold-eth/useMintableTokens";
-import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
+import { useScaffoldWriteContractWithRedstone } from "~~/hooks/scaffold-eth/useScaffoldWriteContractWithRedstone";
 import { useUserInteractionStatus } from "~~/hooks/scaffold-eth/useUserInteractionStatus";
 
 const Home: NextPage = () => {
@@ -20,9 +20,9 @@ const Home: NextPage = () => {
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [sliderValue, setSliderValue] = useState(3);
 
-  const { writeContractAsync: writeManagerAsync } = useScaffoldWriteContract({
-    contractName: "Manager",
-  });
+  // RedStone-wrapped contract for price data injection
+  const { writeContractAsync: writeManagerWithRedstoneAsync, isLoading: isRedstoneLoading } =
+    useScaffoldWriteContractWithRedstone();
 
   // Calculate mintable tokens for the deposit amount
   const { mintableTokens, isLoading: isLoadingMintable } = useMintableTokens(depositAmount);
@@ -113,19 +113,17 @@ const Home: NextPage = () => {
 
     try {
       setIsDepositing(true);
-      toast.loading("Processing deposit...", { id: "deposit" });
 
-      await writeManagerAsync({
+      // Use RedStone-wrapped contract for price data injection
+      await writeManagerWithRedstoneAsync({
         functionName: "deposit",
         value: parseEther(depositAmount),
       });
 
-      toast.success("Deposit successful!", { id: "deposit" });
+      // Success message is handled by the RedStone hook
     } catch (error: any) {
       console.error("Deposit error:", error);
-      toast.error("Deposit failed: " + (error?.shortMessage || error?.message || "Unknown error"), {
-        id: "deposit",
-      });
+      // Error message is handled by the RedStone hook
     } finally {
       setIsDepositing(false);
     }
@@ -398,13 +396,13 @@ const Home: NextPage = () => {
                 {/* Deposit Button */}
                 <button
                   onClick={handleDeposit}
-                  disabled={!isConnected || isDepositing || !isValidAmount}
+                  disabled={!isConnected || isDepositing || isRedstoneLoading || !isValidAmount}
                   className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 disabled:transform-none disabled:cursor-not-allowed"
                 >
-                  {isDepositing ? (
+                  {isDepositing || isRedstoneLoading ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>Depositing...</span>
+                      <span>{isRedstoneLoading ? "Loading price data..." : "Depositing..."}</span>
                     </div>
                   ) : !isConnected ? (
                     "Connect Wallet to Deposit"
@@ -415,15 +413,19 @@ const Home: NextPage = () => {
                   ) : !depositAmount || parseFloat(depositAmount) <= 0 ? (
                     "Enter Valid Amount"
                   ) : (
-                    "Deposit"
+                    "Deposit with Live Price Data"
                   )}
                 </button>
               </div>
 
               {/* Info Text */}
-              <p className="text-xs text-gray-500 text-center mt-4">
-                Connect your wallet and enter an amount to make a deposit
-              </p>
+              <div className="text-center mt-4 space-y-2">
+                <p className="text-xs text-gray-500">Connect your wallet and enter an amount to make a deposit</p>
+                <div className="flex items-center justify-center space-x-2 text-xs">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-green-600 font-medium">Live price data from RedStone Oracle</span>
+                </div>
+              </div>
             </div>
           </div>
         )}

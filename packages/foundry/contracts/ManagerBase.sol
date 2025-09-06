@@ -179,6 +179,47 @@ abstract contract ManagerBase {
         _quoteRatio = _collateralRatio((mintOf[_user] + _addedDeposit), depositOf[_user]);
     }
 
+    /**
+     * @notice
+     *  Calculates how much ChUSD can be minted for a given ETH amount
+     *
+     * @param _ethAmount The amount of ETH to calculate mintable tokens for
+     *
+     * @return _mintableAmount The maximum amount of ChUSD that can be minted
+     *
+     */
+    function calculateMintableTokens(uint256 _ethAmount) external view returns (uint256 _mintableAmount) {
+        // Get current ETH price from oracle
+        uint256 ethPrice = _getEthPrice();
+        // Calculate total ETH value in USD (with 8 decimal precision)
+        uint256 totalEthValueInUsd = (_ethAmount * ethPrice * 1e10) / 1e18;
+        // Calculate maximum mintable amount based on minimum collateral ratio
+        _mintableAmount = (totalEthValueInUsd * 1e18) / MIN_COLLATERAL_RATIO;
+    }
+
+    /**
+     * @notice
+     *  Calculates how much additional ChUSD can be minted for a user with additional ETH
+     *
+     * @param _user The address of the user
+     * @param _additionalEthAmount The additional ETH amount to consider
+     *
+     * @return _mintableAmount The additional amount of ChUSD that can be minted
+     *
+     */
+    function calculateMintableTokensForUser(address _user, uint256 _additionalEthAmount) external view returns (uint256 _mintableAmount) {
+        // Get current ETH price from oracle
+        uint256 ethPrice = _getEthPrice();
+        // Calculate total ETH amount (existing + additional)
+        uint256 totalEthAmount = depositOf[_user] + _additionalEthAmount;
+        // Calculate total ETH value in USD (with 8 decimal precision)
+        uint256 totalEthValueInUsd = (totalEthAmount * ethPrice * 1e10) / 1e18;
+        // Calculate maximum mintable amount from total ETH value
+        uint256 maxMintableFromTotal = (totalEthValueInUsd * 1e18) / MIN_COLLATERAL_RATIO;
+        // Return additional mintable amount (max - already minted)
+        _mintableAmount = maxMintableFromTotal > mintOf[_user] ? maxMintableFromTotal - mintOf[_user] : 0;
+    }
+
     //      ____        __    ___         ______                 __  _
     //     / __ \__  __/ /_  / (_)____   / ____/_  ______  _____/ /_(_)___  ____  _____
     //    / /_/ / / / / __ \/ / / ___/  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
