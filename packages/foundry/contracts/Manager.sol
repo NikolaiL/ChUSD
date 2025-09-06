@@ -95,21 +95,6 @@ contract Manager is MainDemoConsumerBase {
         _deposit(msg.value, msg.sender);
     }
 
-    /**
-     * @notice
-     *  Internal function to deposit ETH and update user's deposit balance
-     *
-     * @param _value The amount of ETH to deposit
-     * @param _sender The address of the user depositing
-     *
-     */
-    function _deposit(uint256 _value, address _sender) internal {
-        // Convert ETH to WETH
-        weth.deposit{value: _value};
-        // Update user's deposit balance
-        depositOf[_sender] += _value;
-    }
-
     //     ______     __                        __   ______                 __  _
     //    / ____/  __/ /____  _________  ____ _/ /  / ____/_  ______  _____/ /_(_)___  ____  _____
     //   / __/ | |/_/ __/ _ \/ ___/ __ \/ __ `/ /  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
@@ -128,23 +113,6 @@ contract Manager is MainDemoConsumerBase {
         mintOf[msg.sender] -= _amount;
         // Burn the ChUSD tokens
         chUsd.burn(msg.sender, _amount);
-    }
-
-    /**
-     * @notice
-     *  Mints ChUSD tokens if collateral ratio is sufficient
-     *
-     * @param _amount The amount of ChUSD to mint
-     *
-     */
-    function mint(uint256 _amount) public {
-        // Update user's minted balance
-        mintOf[msg.sender] += _amount;
-        // Check if collateral ratio is sufficient
-        if (collateralRatio(msg.sender) < MIN_COLLATERAL_RATIO)
-            revert CUErrors.TOO_LOW_COLLATERAL_RATIO();
-        // Mint the ChUSD tokens
-        chUsd.mint(msg.sender, _amount);
     }
 
     /**
@@ -211,6 +179,29 @@ contract Manager is MainDemoConsumerBase {
         );
     }
 
+    //      ____        __    ___         ______                 __  _
+    //     / __ \__  __/ /_  / (_)____   / ____/_  ______  _____/ /_(_)___  ____  _____
+    //    / /_/ / / / / __ \/ / / ___/  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
+    //   / ____/ /_/ / /_/ / / / /__   / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
+    //  /_/    \__,_/_.___/_/_/\___/  /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
+
+    /**
+     * @notice
+     *  Mints ChUSD tokens if collateral ratio is sufficient
+     *
+     * @param _amount The amount of ChUSD to mint
+     *
+     */
+    function mint(uint256 _amount) public {
+        // Update user's minted balance
+        mintOf[msg.sender] += _amount;
+        // Check if collateral ratio is sufficient
+        if (collateralRatio(msg.sender) < MIN_COLLATERAL_RATIO)
+            revert CUErrors.TOO_LOW_COLLATERAL_RATIO();
+        // Mint the ChUSD tokens
+        chUsd.mint(msg.sender, _amount);
+    }
+
     /**
      * @notice
      *  Returns the collateral ratio for a given user
@@ -226,6 +217,12 @@ contract Manager is MainDemoConsumerBase {
         // Calculate and return the collateral ratio
         _ratio = _collateralRatio(mintOf[_user], depositOf[_user]);
     }
+
+    //     ____      __                        __   ______                 __  _
+    //    /  _/___  / /____  _________  ____ _/ /  / ____/_  ______  _____/ /_(_)___  ____  _____
+    //    / // __ \/ __/ _ \/ ___/ __ \/ __ `/ /  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
+    //  _/ // / / / /_/  __/ /  / / / / /_/ / /  / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
+    // /___/_/ /_/\__/\___/_/  /_/ /_/\__,_/_/  /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
 
     /**
      * @notice
@@ -248,5 +245,20 @@ contract Manager is MainDemoConsumerBase {
             (getOracleNumericValueFromTxMsg(bytes32("ETH")) * 1e10)) / 1e18;
         // Return the ratio
         _ratio = totalValue / _minted;
+    }
+
+    /**
+     * @notice
+     *  Internal function to deposit ETH and update user's deposit balance
+     *
+     * @param _value The amount of ETH to deposit
+     * @param _sender The address of the user depositing
+     *
+     */
+    function _deposit(uint256 _value, address _sender) internal {
+        // Convert ETH to WETH
+        weth.deposit{value: _value};
+        // Update user's deposit balance
+        depositOf[_sender] += _value;
     }
 }

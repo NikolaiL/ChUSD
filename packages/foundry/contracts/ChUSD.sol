@@ -79,19 +79,6 @@ contract ChUSD is ERC20, Ownable {
     }
 
     /**
-     * @notice 
-     *  Sets the manager contract address and transfers ownership to it
-     * @param _manager The address of the manager contract
-     *
-     */
-    function setManager(address _manager) external onlyOwner {
-        // Set the manager
-        manager = _manager;
-        // Make it the owner
-        transferOwnership(_manager);
-    }
-
-    /**
      * @notice
      *  Returns the name of the token
      *
@@ -113,6 +100,26 @@ contract ChUSD is ERC20, Ownable {
     function symbol() public pure override returns (string memory _symbol) {
         // Return the symbol of the token
         _symbol = "ChUSD";
+    }
+
+    //     ____        __         ____                              ______                 __  _
+    //    / __ \____  / /_  __   / __ \_      ______  ___  _____   / ____/_  ______  _____/ /_(_)___  ____  _____
+    //   / / / / __ \/ / / / /  / / / / | /| / / __ \/ _ \/ ___/  / /_  / / / / __ \/ ___/ __/ / __ \/ __ \/ ___/
+    //  / /_/ / / / / / /_/ /  / /_/ /| |/ |/ / / / /  __/ /     / __/ / /_/ / / / / /__/ /_/ / /_/ / / / (__  )
+    //  \____/_/ /_/_/\__, /   \____/ |__/|__/_/ /_/\___/_/     /_/    \__,_/_/ /_/\___/\__/_/\____/_/ /_/____/
+    //
+
+    /**
+     * @notice
+     *  Sets the manager contract address and transfers ownership to it
+     * @param _manager The address of the manager contract
+     *
+     */
+    function setManager(address _manager) external onlyOwner {
+        // Set the manager
+        manager = _manager;
+        // Make it the owner
+        transferOwnership(_manager);
     }
 
     /**
