@@ -582,11 +582,6 @@ const deployedContracts = {
               type: "address",
               internalType: "address",
             },
-            {
-              name: "_redstoneExtractor",
-              type: "address",
-              internalType: "address",
-            },
           ],
           stateMutability: "nonpayable",
         },
@@ -603,6 +598,25 @@ const deployedContracts = {
               name: "",
               type: "uint64",
               internalType: "uint64",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "aggregateValues",
+          inputs: [
+            {
+              name: "values",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           stateMutability: "view",
@@ -665,59 +679,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "calculateMintableTokensForUserWithPayload",
-          inputs: [
-            {
-              name: "_user",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "_additionalEthAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
-            },
-          ],
-          outputs: [
-            {
-              name: "_mintableAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "calculateMintableTokensWithPayload",
-          inputs: [
-            {
-              name: "_ethAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
-            },
-          ],
-          outputs: [
-            {
-              name: "_mintableAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "chUsd",
           inputs: [],
           outputs: [
@@ -737,30 +698,6 @@ const deployedContracts = {
               name: "_user",
               type: "address",
               internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "_ratio",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "collateralRatioWithPayload",
-          inputs: [
-            {
-              name: "_user",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
             },
           ],
           outputs: [
@@ -807,6 +744,64 @@ const deployedContracts = {
               name: "deposit",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractTimestampsAndAssertAllAreEqual",
+          inputs: [],
+          outputs: [
+            {
+              name: "extractedTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getAuthorisedSignerIndex",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getDataServiceId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getUniqueSignersThreshold",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
             },
           ],
           stateMutability: "view",
@@ -895,15 +890,15 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "redstoneExtractor",
-          inputs: [],
-          outputs: [
+          name: "validateTimestamp",
+          inputs: [
             {
-              name: "",
-              type: "address",
-              internalType: "contract RedstoneExtractor",
+              name: "receivedTimestampMilliseconds",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
+          outputs: [],
           stateMutability: "view",
         },
         {
@@ -950,8 +945,154 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "CalldataMustHaveValidPayload",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CalldataOverOrUnderFlow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CanNotPickMedianOfEmptyArray",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampMustNotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataTimestampCannotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EachSignerMustProvideTheSameValue",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EmptyCalldataPointersArr",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "GetDataServiceIdNotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "IncorrectUnsignedMetadataSize",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientNumberOfUniqueSigners",
+          inputs: [
+            {
+              name: "receivedSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requiredSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidCalldataPointer",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidSignature",
+          inputs: [
+            {
+              name: "signedHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "RedstonePayloadMustHaveAtLeastOneDataPackage",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SignerNotAuthorised",
+          inputs: [
+            {
+              name: "receivedSigner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
           name: "TOO_LOW_COLLATERAL_RATIO",
           inputs: [],
+        },
+        {
+          type: "error",
+          name: "TimestampFromTooLongFuture",
+          inputs: [
+            {
+              name: "receivedTimestampSeconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "blockTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampIsTooOld",
+          inputs: [
+            {
+              name: "receivedTimestampSeconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "blockTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TooLargeValueByteSize",
+          inputs: [
+            {
+              name: "valueByteSize",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
         },
       ],
       inheritedFunctions: {},
@@ -1281,7 +1422,7 @@ const deployedContracts = {
   },
   84532: {
     ChUSD: {
-      address: "0x1c46ee4b5a41f7a6d19af0557d73b671f7f3aa1c",
+      address: "0x612b77b31cc42e38893328d063a3ae0b98443fbd",
       abi: [
         {
           type: "constructor",
@@ -1833,10 +1974,10 @@ const deployedContracts = {
         },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 30708794,
+      deployedOnBlock: 30709696,
     },
     Manager: {
-      address: "0xec7fcbf159a5f51250b81503ee7439bc587fe2aa",
+      address: "0xb50e287ee801935b0bccf9a50cbb00341dd06244",
       abi: [
         {
           type: "constructor",
@@ -1856,11 +1997,6 @@ const deployedContracts = {
               type: "address",
               internalType: "address",
             },
-            {
-              name: "_redstoneExtractor",
-              type: "address",
-              internalType: "address",
-            },
           ],
           stateMutability: "nonpayable",
         },
@@ -1877,6 +2013,25 @@ const deployedContracts = {
               name: "",
               type: "uint64",
               internalType: "uint64",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "aggregateValues",
+          inputs: [
+            {
+              name: "values",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           stateMutability: "view",
@@ -1939,59 +2094,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "calculateMintableTokensForUserWithPayload",
-          inputs: [
-            {
-              name: "_user",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "_additionalEthAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
-            },
-          ],
-          outputs: [
-            {
-              name: "_mintableAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "calculateMintableTokensWithPayload",
-          inputs: [
-            {
-              name: "_ethAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
-            },
-          ],
-          outputs: [
-            {
-              name: "_mintableAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "chUsd",
           inputs: [],
           outputs: [
@@ -2011,30 +2113,6 @@ const deployedContracts = {
               name: "_user",
               type: "address",
               internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "_ratio",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "collateralRatioWithPayload",
-          inputs: [
-            {
-              name: "_user",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
             },
           ],
           outputs: [
@@ -2081,6 +2159,64 @@ const deployedContracts = {
               name: "deposit",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractTimestampsAndAssertAllAreEqual",
+          inputs: [],
+          outputs: [
+            {
+              name: "extractedTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getAuthorisedSignerIndex",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getDataServiceId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getUniqueSignersThreshold",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
             },
           ],
           stateMutability: "view",
@@ -2169,15 +2305,15 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "redstoneExtractor",
-          inputs: [],
-          outputs: [
+          name: "validateTimestamp",
+          inputs: [
             {
-              name: "",
-              type: "address",
-              internalType: "contract RedstoneExtractor",
+              name: "receivedTimestampMilliseconds",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
+          outputs: [],
           stateMutability: "view",
         },
         {
@@ -2224,12 +2360,158 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "CalldataMustHaveValidPayload",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CalldataOverOrUnderFlow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CanNotPickMedianOfEmptyArray",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampMustNotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataTimestampCannotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EachSignerMustProvideTheSameValue",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EmptyCalldataPointersArr",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "GetDataServiceIdNotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "IncorrectUnsignedMetadataSize",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientNumberOfUniqueSigners",
+          inputs: [
+            {
+              name: "receivedSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requiredSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidCalldataPointer",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidSignature",
+          inputs: [
+            {
+              name: "signedHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "RedstonePayloadMustHaveAtLeastOneDataPackage",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SignerNotAuthorised",
+          inputs: [
+            {
+              name: "receivedSigner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
           name: "TOO_LOW_COLLATERAL_RATIO",
           inputs: [],
         },
+        {
+          type: "error",
+          name: "TimestampFromTooLongFuture",
+          inputs: [
+            {
+              name: "receivedTimestampSeconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "blockTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampIsTooOld",
+          inputs: [
+            {
+              name: "receivedTimestampSeconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "blockTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TooLargeValueByteSize",
+          inputs: [
+            {
+              name: "valueByteSize",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
       ],
       inheritedFunctions: {},
-      deployedOnBlock: 30708794,
+      deployedOnBlock: 30709696,
     },
     RedstoneExtractor: {
       address: "0x63a79a78cd06373ed1520cceaa1361326e3a29c5",
@@ -3449,11 +3731,6 @@ const deployedContracts = {
               type: "address",
               internalType: "address",
             },
-            {
-              name: "_redstoneExtractor",
-              type: "address",
-              internalType: "address",
-            },
           ],
           stateMutability: "nonpayable",
         },
@@ -3470,6 +3747,25 @@ const deployedContracts = {
               name: "",
               type: "uint64",
               internalType: "uint64",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "aggregateValues",
+          inputs: [
+            {
+              name: "values",
+              type: "uint256[]",
+              internalType: "uint256[]",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           stateMutability: "view",
@@ -3532,59 +3828,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "calculateMintableTokensForUserWithPayload",
-          inputs: [
-            {
-              name: "_user",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "_additionalEthAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
-            },
-          ],
-          outputs: [
-            {
-              name: "_mintableAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "calculateMintableTokensWithPayload",
-          inputs: [
-            {
-              name: "_ethAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
-            },
-          ],
-          outputs: [
-            {
-              name: "_mintableAmount",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "chUsd",
           inputs: [],
           outputs: [
@@ -3604,30 +3847,6 @@ const deployedContracts = {
               name: "_user",
               type: "address",
               internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "_ratio",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "collateralRatioWithPayload",
-          inputs: [
-            {
-              name: "_user",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "redstonePayload",
-              type: "bytes",
-              internalType: "bytes",
             },
           ],
           outputs: [
@@ -3674,6 +3893,64 @@ const deployedContracts = {
               name: "deposit",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "extractTimestampsAndAssertAllAreEqual",
+          inputs: [],
+          outputs: [
+            {
+              name: "extractedTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "pure",
+        },
+        {
+          type: "function",
+          name: "getAuthorisedSignerIndex",
+          inputs: [
+            {
+              name: "signerAddress",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getDataServiceId",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "string",
+              internalType: "string",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getUniqueSignersThreshold",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "uint8",
+              internalType: "uint8",
             },
           ],
           stateMutability: "view",
@@ -3762,15 +4039,15 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "redstoneExtractor",
-          inputs: [],
-          outputs: [
+          name: "validateTimestamp",
+          inputs: [
             {
-              name: "",
-              type: "address",
-              internalType: "contract RedstoneExtractor",
+              name: "receivedTimestampMilliseconds",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
+          outputs: [],
           stateMutability: "view",
         },
         {
@@ -3817,8 +4094,154 @@ const deployedContracts = {
         },
         {
           type: "error",
+          name: "CalldataMustHaveValidPayload",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CalldataOverOrUnderFlow",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "CanNotPickMedianOfEmptyArray",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampMustNotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataPackageTimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "DataTimestampCannotBeZero",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EachSignerMustProvideTheSameValue",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "EmptyCalldataPointersArr",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "GetDataServiceIdNotImplemented",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "IncorrectUnsignedMetadataSize",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InsufficientNumberOfUniqueSigners",
+          inputs: [
+            {
+              name: "receivedSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "requiredSignersCount",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "InvalidCalldataPointer",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "InvalidSignature",
+          inputs: [
+            {
+              name: "signedHash",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "RedstonePayloadMustHaveAtLeastOneDataPackage",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "SignerNotAuthorised",
+          inputs: [
+            {
+              name: "receivedSigner",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+        },
+        {
+          type: "error",
           name: "TOO_LOW_COLLATERAL_RATIO",
           inputs: [],
+        },
+        {
+          type: "error",
+          name: "TimestampFromTooLongFuture",
+          inputs: [
+            {
+              name: "receivedTimestampSeconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "blockTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampIsTooOld",
+          inputs: [
+            {
+              name: "receivedTimestampSeconds",
+              type: "uint256",
+              internalType: "uint256",
+            },
+            {
+              name: "blockTimestamp",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+        },
+        {
+          type: "error",
+          name: "TimestampsMustBeEqual",
+          inputs: [],
+        },
+        {
+          type: "error",
+          name: "TooLargeValueByteSize",
+          inputs: [
+            {
+              name: "valueByteSize",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
         },
       ],
       inheritedFunctions: {},
