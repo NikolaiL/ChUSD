@@ -107,8 +107,8 @@ const PikachuPage = () => {
 
         {/* Deposit Modal */}
         {showDepositModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 animate-in fade-in-0 zoom-in-95">
+          <div className="fixed inset-0 bg-gradient-to-br from-yellow-100 to-yellow-200 flex items-center justify-center p-4 z-50">
+            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-2xl max-w-md w-full mx-4 transform transition-all duration-300 animate-in fade-in-0 zoom-in-95 border border-yellow-200">
               {/* Close Button */}
               <button
                 onClick={handleCloseModal}
@@ -132,7 +132,7 @@ const PikachuPage = () => {
                     min="0"
                     value={depositAmount}
                     onChange={e => setDepositAmount(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none transition-all duration-200"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-500 focus:border-transparent outline-none transition-all duration-200 text-black [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0.1"
                   />
                 </div>
