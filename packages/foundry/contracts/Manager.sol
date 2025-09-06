@@ -46,9 +46,18 @@ contract Manager is MainDemoConsumerBase {
         oracle = _oracle;
     }
 
+    function depositAndMint(uint256 _amount) public payable {
+        _deposit(msg.value, msg.sender);
+        mint(_amount);
+    }
+
     function deposit() public payable {
-        weth.deposit{value: msg.value}();
-        depositOf[msg.sender] += msg.value;
+        _deposit(msg.value, msg.sender);
+    }
+
+    function _deposit(uint256 _value, address _sender) internal {
+        weth.deposit{value: _value};
+        depositOf[_sender] += _value;
     }
 
     function burn(uint256 _amount) public {
@@ -85,10 +94,26 @@ contract Manager is MainDemoConsumerBase {
     function collateralRatio(
         address _user
     ) public view returns (uint256 _ratio) {
-        uint256 minted = mintOf[_user];
-        if (minted == 0) return type(uint256).max;
-        uint256 totalValue = (depositOf[_user] *
+        _ratio = _collateralRatio(mintOf[_user], depositOf[_user]);
+    }
+
+    function quote(
+        address _user,
+        uint256 _addedDeposit
+    ) external view returns (uint256 _quoteRatio) {
+        _quoteRatio = _collateralRatio(
+            (mintOf[_user] + _addedDeposit),
+            depositOf[_user]
+        );
+    }
+
+    function _collateralRatio(
+        uint256 _minted,
+        uint256 _deposited
+    ) internal view returns (uint256 _ratio) {
+        if (_minted == 0) return type(uint256).max;
+        uint256 totalValue = (_deposited *
             (getOracleNumericValueFromTxMsg(bytes32("ETH")) * 1e10)) / 1e18;
-        _ratio = totalValue / minted;
+        _ratio = totalValue / _minted;
     }
 }
