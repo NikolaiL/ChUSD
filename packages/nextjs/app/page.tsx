@@ -2,27 +2,29 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import type { NextPage } from "next";
 import toast from "react-hot-toast";
 import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useBalance } from "wagmi";
 import { useMintableTokens } from "~~/hooks/scaffold-eth/useMintableTokens";
-import { useScaffoldWriteContractWithRedstone } from "~~/hooks/scaffold-eth/useScaffoldWriteContractWithRedstone";
+import { useScaffoldWriteContractWithRedstoneManual } from "~~/hooks/scaffold-eth/useScaffoldWriteContractWithRedstoneManual";
 import { useUserInteractionStatus } from "~~/hooks/scaffold-eth/useUserInteractionStatus";
 
 const Home: NextPage = () => {
   const { isConnected } = useAccount();
   const { hasInteracted } = useUserInteractionStatus();
+  const { setFrameReady, isFrameReady } = useMiniKit();
   const [depositAmount, setDepositAmount] = useState("0.1");
   const [isDepositing, setIsDepositing] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [sliderValue, setSliderValue] = useState(3);
 
-  // RedStone-wrapped contract for price data injection
-  const { writeContractAsync: writeManagerWithRedstoneAsync, isLoading: isRedstoneLoading } =
-    useScaffoldWriteContractWithRedstone();
+  // RedStone manual payload contract write hook
+  const { writeContractAsync: writeManagerAsync, isLoading: isManagerLoading } =
+    useScaffoldWriteContractWithRedstoneManual();
 
   // Calculate mintable tokens for the deposit amount
   const { mintableTokens, isLoading: isLoadingMintable } = useMintableTokens(depositAmount);
@@ -53,6 +55,11 @@ const Home: NextPage = () => {
     4: "Sad",
     5: "Anxious",
   };
+
+  // Initialize MiniKit
+  useEffect(() => {
+    if (!isFrameReady) setFrameReady();
+  }, [isFrameReady, setFrameReady]);
 
   // Add class to body to prevent scrolling
   useEffect(() => {
@@ -114,8 +121,8 @@ const Home: NextPage = () => {
     try {
       setIsDepositing(true);
 
-      // Use RedStone-wrapped contract for price data injection
-      await writeManagerWithRedstoneAsync({
+      // Use RedStone manual payload contract write
+      await writeManagerAsync({
         functionName: "deposit",
         value: parseEther(depositAmount),
       });
@@ -396,13 +403,13 @@ const Home: NextPage = () => {
                 {/* Deposit Button */}
                 <button
                   onClick={handleDeposit}
-                  disabled={!isConnected || isDepositing || isRedstoneLoading || !isValidAmount}
+                  disabled={!isConnected || isDepositing || isManagerLoading || !isValidAmount}
                   className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 disabled:transform-none disabled:cursor-not-allowed"
                 >
-                  {isDepositing || isRedstoneLoading ? (
+                  {isDepositing || isManagerLoading ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>{isRedstoneLoading ? "Loading price data..." : "Depositing..."}</span>
+                      <span>{isManagerLoading ? "Loading price data..." : "Depositing..."}</span>
                     </div>
                   ) : !isConnected ? (
                     "Connect Wallet to Deposit"

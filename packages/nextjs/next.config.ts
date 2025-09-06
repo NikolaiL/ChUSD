@@ -12,6 +12,23 @@ const nextConfig: NextConfig = {
   webpack: config => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
     config.externals.push("pino-pretty", "lokijs", "encoding");
+
+    // Fix for @ethersproject module resolution issues
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@ethersproject/strings": require.resolve("@ethersproject/strings"),
+      "@ethersproject/strings/lib/utf8": require.resolve("@ethersproject/strings/lib/utf8.js"),
+      "@ethersproject/bytes": require.resolve("@ethersproject/bytes"),
+      "@ethersproject/keccak256": require.resolve("@ethersproject/keccak256"),
+      "@ethersproject/sha2": require.resolve("@ethersproject/sha2"),
+    };
+
+    // Additional module resolution for RedStone SDK
+    config.resolve.modules = ["node_modules"];
+    config.resolve.extensionAlias = {
+      ".js": [".js", ".ts", ".tsx"],
+    };
+
     return config;
   },
 };
