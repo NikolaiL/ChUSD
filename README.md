@@ -174,6 +174,35 @@ This project is licensed under the MIT License - see the [LICENSE](LICENCE) file
 
 ---
 
+## 👥 Team
+
+<div align="center">
+
+### Core Team
+
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://x.com/0xjsieth">
+        <img src="https://pbs.twimg.com/profile_images/1888550284021923840/P5f5jXpr_400x400.png" width="100px;" alt="0xjsieth"/>
+        <br />
+        <sub><b>@0xjsieth</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://x.com/AnettRolikova">
+        <img src="https://pbs.twimg.com/profile_images/1239269511561457665/qWkxcDFd_400x400.jpg" width="100px;" alt="AnettRolikova"/>
+        <br />
+        <sub><b>@AnettRolikova</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
 ## 🙏 Acknowledgments
 
 - **ScaffoldETH Team**: For the amazing development framework
