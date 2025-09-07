@@ -1,0 +1,15 @@
+{
+  "buildCommand": "yarn build",
+  "installCommand": "yarn install --frozen-lockfile",
+  "framework": "nextjs",
+  "functions": {
+    "packages/nextjs/app/api/webhook/route.ts": {
+      "maxDuration": 10
+    }
+  },
+  "build": {
+    "env": {
+      "NODE_OPTIONS": "--max-old-space-size=4096"
+    }
+  }
+}
