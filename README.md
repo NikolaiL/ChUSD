@@ -6,7 +6,8 @@
 
 **A gamified stablecoin Base miniapp that uses ETH as collateral to mint chUSD stablecoin**
 
-[![Website](https://img.shields.io/badge/Website-Live-brightgreen)](https://your-website.com)
+[![Website](https://img.shields.io/badge/Website-Live-brightgreen)](https://pikachusd.vercel.app/)
+[![Farcaster Miniapp](https://img.shields.io/badge/Farcaster-Miniapp-purple)](https://farcaster.xyz/~/developers/mini-apps/preview?url=https%3A%2F%2Fpikachusd.vercel.app%2F)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-black)](https://github.com/the-stable-corp/ChUSD)
 [![Submission](https://img.shields.io/badge/Submission-ETH%20Warsaw%202025-blue)](https://taikai.network/ethwarsaw/hackathons/ethwarsaw-2025/projects/cmf8qfbpe01bugq91jvys8ocn/idea)
 [![Slide Deck](https://img.shields.io/badge/Slide%20Deck-Presentation-red)](https://www.canva.com/design/DAGx6vsXRns/XYWuIsS5EQV_2Fge8OvbIA/edit?utm_content=DAGx6vsXRns&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
@@ -227,6 +228,6 @@ This software is **GPL-3.0 licensed**. This means:
 
 **Keep Pikachu Happy! ⚡**
 
-[Website](https://your-website.com) • [GitHub](https://github.com/the-stable-corp/ChUSD) • [Demo](https://your-demo.com)
+[Website](https://pikachusd.vercel.app/) • [Farcaster Miniapp](https://farcaster.xyz/~/developers/mini-apps/preview?url=https%3A%2F%2Fpikachusd.vercel.app%2F) • [GitHub](https://github.com/the-stable-corp/ChUSD)
 
 </div>
