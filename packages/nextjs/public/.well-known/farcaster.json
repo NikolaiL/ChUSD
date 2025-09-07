@@ -1,0 +1,28 @@
+{
+  "frame": {
+    "name": "Pika chUSD",
+    "version": "1",
+    "iconUrl": "https://github.com/the-stable-corp/ChUSD/blob/main/images/PikaCHUSD%20thumbnail.png",
+    "homeUrl": "https://pikachusd.vercel.app",
+    "imageUrl": "https://pikachusd.vercel.app/image.png",
+    "buttonTitle": "Deposit ETH",
+    "splashImageUrl": "https://pikachusd.vercel.app/splash.png",
+    "splashBackgroundColor": "#f5f0d9",
+    "webhookUrl": "https://pikachusd.vercel.app/api/webhook",
+    "subtitle": "Pikachu ",
+    "description": "Experience Pikachu's moods change based on the price of ETH",
+    "primaryCategory": "entertainment",
+    "tags": [
+      "pikachu",
+      "collateral",
+      "defi",
+      "stablecoins"
+    ],
+    "tagline": "Make Pikachu happy! "
+  },
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  }
+}
