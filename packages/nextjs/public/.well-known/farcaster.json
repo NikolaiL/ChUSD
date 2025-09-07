@@ -12,12 +12,7 @@
     "subtitle": "Pikachu ",
     "description": "Experience Pikachu's moods change based on the price of ETH",
     "primaryCategory": "entertainment",
-    "tags": [
-      "pikachu",
-      "collateral",
-      "defi",
-      "stablecoins"
-    ],
+    "tags": ["pikachu", "collateral", "defi", "stablecoins"],
     "tagline": "Make Pikachu happy! "
   },
   "accountAssociation": {

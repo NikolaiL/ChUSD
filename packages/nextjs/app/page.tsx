@@ -5,11 +5,10 @@ import Image from "next/image";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import type { NextPage } from "next";
 import toast from "react-hot-toast";
-import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useBalance } from "wagmi";
 import { useMintableTokens } from "~~/hooks/scaffold-eth/useMintableTokens";
-import { useScaffoldWriteContractWithRedstoneManual } from "~~/hooks/scaffold-eth/useScaffoldWriteContractWithRedstoneManual";
+// import { useScaffoldWriteContractWithRedstoneManual } from "~~/hooks/scaffold-eth/useScaffoldWriteContractWithRedstoneManual";
 import { useUserInteractionStatus } from "~~/hooks/scaffold-eth/useUserInteractionStatus";
 
 const Home: NextPage = () => {
@@ -132,9 +131,9 @@ const Home: NextPage = () => {
     }
   }, [isConnected]);
 
-  // RedStone manual payload contract write hook
-  const { writeContractAsync: writeManagerAsync, isLoading: isManagerLoading } =
-    useScaffoldWriteContractWithRedstoneManual();
+  // RedStone manual payload contract write hook - COMMENTED OUT
+  // const { writeContractAsync: writeManagerAsync, isLoading: isManagerLoading } =
+  //   useScaffoldWriteContractWithRedstoneManual();
 
   // Calculate mintable tokens for the deposit amount
   const { mintableTokens, isLoading: isLoadingMintable } = useMintableTokens(depositAmount);
@@ -231,16 +230,29 @@ const Home: NextPage = () => {
     try {
       setIsDepositing(true);
 
-      // Use RedStone manual payload contract write
-      await writeManagerAsync({
-        functionName: "deposit",
-        value: parseEther(depositAmount),
-      });
+      // COMMENTED OUT: RedStone manual payload contract write
+      // await writeManagerAsync({
+      //   functionName: "deposit",
+      //   value: parseEther(depositAmount),
+      // });
 
-      // Success message is handled by the RedStone hook
+      // Simulate deposit success and show animation view
+      toast.success(`Deposit of ${depositAmount} ETH simulated successfully!`);
+
+      // Close the modal and trigger the animation view
+      setShowDepositModal(false);
+
+      // Simulate a successful deposit by setting the user as having interacted
+      // This will trigger the animation view with different expressions
+      // Dispatch immediately to avoid showing the animation video
+      window.dispatchEvent(
+        new CustomEvent("userDeposited", {
+          detail: { amount: depositAmount },
+        }),
+      );
     } catch (error: any) {
       console.error("Deposit error:", error);
-      // Error message is handled by the RedStone hook
+      toast.error("Deposit failed. Please try again.");
     } finally {
       setIsDepositing(false);
     }
@@ -250,53 +262,34 @@ const Home: NextPage = () => {
   if (hasInteracted) {
     // Active user - show Pikachu slider content
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-100 to-yellow-200">
+      <div className="h-screen bg-gradient-to-br from-yellow-100 to-yellow-200 flex flex-col">
         {/* Mobile-first responsive container */}
-        <div className="container mx-auto px-4 py-8 max-w-md sm:max-w-lg md:max-w-2xl">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-yellow-600 mb-4 drop-shadow-lg">
-              Pikachu Moods
-            </h1>
-            <p className="text-lg sm:text-xl text-gray-700 font-medium">
-              Adjust the slider to see different Pikachu emotions
-            </p>
-          </div>
-
+        <div className="container mx-auto px-4 py-4 max-w-md sm:max-w-lg md:max-w-2xl flex-1 flex flex-col">
           {/* Pikachu Mood Display */}
-          <div className="mb-8">
-            <div className="relative w-full aspect-square bg-yellow-100 rounded-2xl shadow-lg overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-yellow-200 to-yellow-300">
-                <div className="relative">
-                  {/* Pikachu Mood Image */}
-                  <div className="relative animate-pulse">
-                    <Image
-                      src={moodImages[sliderValue as keyof typeof moodImages]}
-                      alt={`Pikachu ${moodLabels[sliderValue as keyof typeof moodLabels]}`}
-                      width={384}
-                      height={384}
-                      className="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 object-contain drop-shadow-lg"
-                    />
-                  </div>
-
-                  {/* Mood Label */}
-                  <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-xl shadow-lg font-bold text-lg">
-                      {moodLabels[sliderValue as keyof typeof moodLabels]} ⚡
-                    </div>
-                  </div>
+          <div className="mb-4 flex-1 flex items-center justify-center">
+            <div className="relative w-full max-w-sm aspect-square bg-yellow-100 rounded-2xl shadow-lg overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-yellow-200 to-yellow-300">
+                {/* Pikachu Mood Image - fills entire card */}
+                <div className="relative w-full h-full">
+                  <Image
+                    src={moodImages[sliderValue as keyof typeof moodImages]}
+                    alt={`Pikachu ${moodLabels[sliderValue as keyof typeof moodLabels]}`}
+                    width={512}
+                    height={512}
+                    className="w-full h-full object-cover drop-shadow-lg"
+                  />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Slider Container */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-lg mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Mood Slider</h2>
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg mb-4">
+            <h2 className="text-lg font-bold text-gray-800 mb-4 text-center">Mood Slider</h2>
 
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Slider */}
-              <div className="px-4">
+              <div className="px-2">
                 <input
                   type="range"
                   min="1"
@@ -311,7 +304,7 @@ const Home: NextPage = () => {
                 />
 
                 {/* Slider Labels */}
-                <div className="flex justify-between mt-2 text-sm text-gray-600">
+                <div className="flex justify-between mt-1 text-xs text-gray-600">
                   <span className="font-medium">1</span>
                   <span className="font-medium">2</span>
                   <span className="font-medium">3</span>
@@ -319,25 +312,12 @@ const Home: NextPage = () => {
                   <span className="font-medium">5</span>
                 </div>
               </div>
-
-              {/* Current Value Display */}
-              <div className="text-center">
-                <div className="bg-yellow-100 rounded-xl p-4 inline-block">
-                  <p className="text-lg text-gray-700">
-                    Current Mood:{" "}
-                    <span className="font-bold text-yellow-700">
-                      {moodLabels[sliderValue as keyof typeof moodLabels]}
-                    </span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">Value: {sliderValue}/5</p>
-                </div>
-              </div>
             </div>
           </div>
 
           {/* Footer */}
           <div className="text-center">
-            <p className="text-sm text-gray-600">Powered by ⚡ Pikachu Moods & Scaffold-ETH 2</p>
+            <p className="text-xs text-gray-600">Powered by ⚡ Pikachu Moods & Scaffold-ETH 2</p>
           </div>
         </div>
 
@@ -656,13 +636,13 @@ If you still get Chain ID 84610 error:
                 {/* Deposit Button */}
                 <button
                   onClick={handleDeposit}
-                  disabled={!isConnected || isDepositing || isManagerLoading || !isValidAmount || isWrongNetwork}
+                  disabled={!isConnected || isDepositing || !isValidAmount || isWrongNetwork}
                   className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 disabled:transform-none disabled:cursor-not-allowed"
                 >
-                  {isDepositing || isManagerLoading ? (
+                  {isDepositing ? (
                     <div className="flex items-center justify-center space-x-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                      <span>{isManagerLoading ? "Loading price data..." : "Depositing..."}</span>
+                      <span>Simulating Deposit...</span>
                     </div>
                   ) : !isConnected ? (
                     "Connect Wallet to Deposit"
@@ -673,17 +653,17 @@ If you still get Chain ID 84610 error:
                   ) : !depositAmount || parseFloat(depositAmount) <= 0 ? (
                     "Enter Valid Amount"
                   ) : (
-                    "Deposit with Live Price Data"
+                    "Simulate Deposit & View Animation"
                   )}
                 </button>
               </div>
 
               {/* Info Text */}
               <div className="text-center mt-4 space-y-2">
-                <p className="text-xs text-gray-500">Connect your wallet and enter an amount to make a deposit</p>
+                <p className="text-xs text-gray-500">Connect your wallet and enter an amount to simulate a deposit</p>
                 <div className="flex items-center justify-center space-x-2 text-xs">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-green-600 font-medium">Live price data from RedStone Oracle</span>
+                  <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+                  <span className="text-yellow-600 font-medium">Demo Mode - No actual contract interaction</span>
                 </div>
               </div>
             </div>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useScaffoldReadContract } from "./useScaffoldReadContract";
 import { useAccount } from "wagmi";
 
@@ -7,9 +8,11 @@ import { useAccount } from "wagmi";
  * 1. ChUSD token balance > 0
  * 2. User has deposits (depositOf > 0)
  * 3. User has minted tokens (mintOf > 0)
+ * 4. Simulated deposit (for demo purposes)
  */
 export const useUserInteractionStatus = () => {
   const { address } = useAccount();
+  const [simulatedInteraction, setSimulatedInteraction] = useState(false);
 
   // Check ChUSD balance
   const { data: chUsdBalance } = useScaffoldReadContract({
@@ -32,9 +35,26 @@ export const useUserInteractionStatus = () => {
     args: address ? [address] : [undefined],
   });
 
+  // Listen for simulated deposit events
+  useEffect(() => {
+    const handleUserDeposited = (event: CustomEvent) => {
+      console.log("User deposited event received:", event.detail);
+      setSimulatedInteraction(true);
+    };
+
+    window.addEventListener("userDeposited", handleUserDeposited as EventListener);
+
+    return () => {
+      window.removeEventListener("userDeposited", handleUserDeposited as EventListener);
+    };
+  }, []);
+
   // User has interacted if any of these conditions are true
   const hasInteracted =
-    (chUsdBalance && chUsdBalance > 0n) || (depositAmount && depositAmount > 0n) || (mintedAmount && mintedAmount > 0n);
+    (chUsdBalance && chUsdBalance > 0n) ||
+    (depositAmount && depositAmount > 0n) ||
+    (mintedAmount && mintedAmount > 0n) ||
+    simulatedInteraction;
 
   return {
     hasInteracted,
@@ -42,5 +62,6 @@ export const useUserInteractionStatus = () => {
     depositAmount,
     mintedAmount,
     isConnected: !!address,
+    simulatedInteraction,
   };
 };
