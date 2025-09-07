@@ -2,6 +2,7 @@
   "name": "@se-2/foundry",
   "version": "0.0.1",
   "type": "module",
+  "license": "GPL-3.0",
   "scripts": {
     "account": "make account",
     "account:generate": "node scripts-js/generateKeystore.js",

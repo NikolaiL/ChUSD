@@ -2,6 +2,7 @@
   "name": "@se-2/nextjs",
   "version": "0.1.0",
   "private": true,
+  "license": "GPL-3.0",
   "scripts": {
     "build": "next build",
     "check-types": "tsc --noEmit --incremental",
