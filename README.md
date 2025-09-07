@@ -170,7 +170,18 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENCE) file for details.
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)** - see the [LICENSE](LICENSE) file for details.
+
+### ⚠️ Important Notice
+
+This software is **GPL-3.0 licensed**. This means:
+- ✅ You can use, modify, and distribute this software
+- ✅ You can create derivative works
+- ❌ **Any derivative works MUST also be GPL-3.0 licensed**
+- ❌ **You CANNOT use this code in proprietary/closed-source projects**
+- ❌ **You CANNOT change the license to MIT, Apache, or any other license**
+
+**If you use this code, your project must remain open source and GPL-3.0 licensed.**
 
 ---
 
