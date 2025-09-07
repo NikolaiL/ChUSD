@@ -91,6 +91,20 @@ abstract contract ManagerBase {
 
     /**
      * @notice
+     *  Burns ChUSD tokens and withdraws ETH collateral in one transaction
+     *
+     * @param _amount The amount of ChUSD to burn
+     *
+     */
+    function burnAndWithdraw(uint256 _amount) external {
+        // Burn the requested amount of ChUSD
+        burn(_amount);
+        // Withdraw the requested amount of ETH
+        withdraw(_amount);
+    }
+
+    /**
+     * @notice
      *  Deposits ETH as collateral without minting ChUSD
      *
      */
@@ -112,7 +126,7 @@ abstract contract ManagerBase {
      * @param _amount The amount of ChUSD to burn
      *
      */
-    function burn(uint256 _amount) external {
+    function burn(uint256 _amount) public {
         // Update user's minted balance
         mintOf[msg.sender] -= _amount;
         // Burn the ChUSD tokens
@@ -126,7 +140,7 @@ abstract contract ManagerBase {
      * @param _amount The amount of ETH to withdraw
      *
      */
-    function withdraw(uint256 _amount) external {
+    function withdraw(uint256 _amount) public {
         // Update user's deposit balance
         depositOf[msg.sender] -= _amount;
         // Check if collateral ratio is still sufficient

@@ -5,10 +5,12 @@ import Image from "next/image";
 import { useMiniKit } from "@coinbase/onchainkit/minikit";
 import type { NextPage } from "next";
 import toast from "react-hot-toast";
+import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useBalance } from "wagmi";
 import { useMintableTokens } from "~~/hooks/scaffold-eth/useMintableTokens";
-// import { useScaffoldWriteContractWithRedstoneManual } from "~~/hooks/scaffold-eth/useScaffoldWriteContractWithRedstoneManual";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth/useScaffoldReadContract";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth/useScaffoldWriteContract";
 import { useUserInteractionStatus } from "~~/hooks/scaffold-eth/useUserInteractionStatus";
 
 const Home: NextPage = () => {
@@ -20,6 +22,17 @@ const Home: NextPage = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [sliderValue, setSliderValue] = useState(3);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [activeTab, setActiveTab] = useState<"withdraw" | "refill">("withdraw");
+  const [actionType, setActionType] = useState<
+    "burn" | "withdraw" | "deposit" | "mint" | "burnAndWithdraw" | "depositAndMint" | null
+  >(null);
+  const [actionAmount, setActionAmount] = useState("0.1");
+  const [burnAndWithdrawAmount, setBurnAndWithdrawAmount] = useState("0.1");
+  const [depositAndMintAmount, setDepositAndMintAmount] = useState("0.1");
+  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
 
   // Debug logging
   console.log("Wallet connected:", isConnected);
@@ -143,6 +156,32 @@ const Home: NextPage = () => {
     address: address,
   });
 
+  // Contract write hooks
+  const { writeContractAsync: writeManagerAsync } = useScaffoldWriteContract({
+    contractName: "Manager",
+  });
+
+  // Get user's ChUSD balance
+  const { data: chUsdBalance } = useScaffoldReadContract({
+    contractName: "ChUSD",
+    functionName: "balanceOf",
+    args: address ? [address] : [undefined],
+  });
+
+  // Get user's deposited ETH
+  const { data: depositedEth } = useScaffoldReadContract({
+    contractName: "Manager",
+    functionName: "depositOf",
+    args: address ? [address] : [undefined],
+  });
+
+  // Get user's minted ChUSD
+  const { data: mintedChUsd } = useScaffoldReadContract({
+    contractName: "Manager",
+    functionName: "mintOf",
+    args: address ? [address] : [undefined],
+  });
+
   // Validation states
   const isNegativeAmount = parseFloat(depositAmount) < 0;
   const isExceedingBalance = balance && parseFloat(depositAmount) > parseFloat(balance.formatted);
@@ -216,6 +255,44 @@ const Home: NextPage = () => {
     setShowDepositModal(false);
   };
 
+  // Handle action modal close
+  const handleCloseActionModal = () => {
+    setShowActionModal(false);
+    setActiveTab("withdraw");
+    setActionType(null);
+    setActionAmount("0.1");
+    setBurnAndWithdrawAmount("0.1");
+    setDepositAndMintAmount("0.1");
+    setActionError(null);
+    setActionSuccess(null);
+  };
+
+  // Handle burn and withdraw amount change
+  const handleBurnAndWithdrawAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.startsWith("-")) {
+      return;
+    }
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setBurnAndWithdrawAmount(value);
+      setActionError(null);
+      setActionSuccess(null);
+    }
+  };
+
+  // Handle deposit and mint amount change
+  const handleDepositAndMintAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.startsWith("-")) {
+      return;
+    }
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setDepositAndMintAmount(value);
+      setActionError(null);
+      setActionSuccess(null);
+    }
+  };
+
   const handleDeposit = async () => {
     if (!isConnected) {
       toast.error("Please connect your wallet first");
@@ -258,6 +335,111 @@ const Home: NextPage = () => {
     }
   };
 
+  // Handle action execution
+  const handleAction = async () => {
+    if (!isConnected) {
+      setActionError("Please connect your wallet first");
+      return;
+    }
+
+    if (!actionType) {
+      setActionError("Please select an action type");
+      return;
+    }
+
+    // Special validation for burnAndWithdraw and depositAndMint
+    if (actionType === "burnAndWithdraw") {
+      if (!burnAndWithdrawAmount || parseFloat(burnAndWithdrawAmount) <= 0) {
+        setActionError("Please enter a valid amount");
+        return;
+      }
+    } else if (actionType === "depositAndMint") {
+      if (!depositAndMintAmount || parseFloat(depositAndMintAmount) <= 0) {
+        setActionError("Please enter a valid amount");
+        return;
+      }
+    } else {
+      if (!actionAmount || parseFloat(actionAmount) <= 0) {
+        setActionError("Please enter a valid amount");
+        return;
+      }
+    }
+
+    try {
+      setIsActionLoading(true);
+      setActionError(null);
+      setActionSuccess(null);
+
+      const amount = parseEther(actionAmount);
+
+      switch (actionType) {
+        case "burn":
+          await writeManagerAsync({
+            functionName: "burn",
+            args: [amount],
+          });
+          setActionSuccess(`Successfully burned ${actionAmount} ChUSD`);
+          break;
+
+        case "withdraw":
+          await writeManagerAsync({
+            functionName: "withdraw",
+            args: [amount],
+          });
+          setActionSuccess(`Successfully withdrew ${actionAmount} ETH`);
+          break;
+
+        case "deposit":
+          await writeManagerAsync({
+            functionName: "deposit",
+            value: amount,
+          });
+          setActionSuccess(`Successfully deposited ${actionAmount} ETH`);
+          break;
+
+        case "mint":
+          await writeManagerAsync({
+            functionName: "mint",
+            args: [amount],
+          });
+          setActionSuccess(`Successfully minted ${actionAmount} ChUSD`);
+          break;
+
+        case "burnAndWithdraw":
+          await (writeManagerAsync as any)({
+            functionName: "burnAndWithdraw",
+            args: [parseEther(burnAndWithdrawAmount)],
+          });
+          setActionSuccess(`Successfully burned and withdrew ${burnAndWithdrawAmount} ChUSD/ETH`);
+          break;
+
+        case "depositAndMint":
+          await (writeManagerAsync as any)({
+            functionName: "depositAndMint",
+            args: [parseEther(depositAndMintAmount)],
+          });
+          setActionSuccess(`Successfully deposited and minted ${depositAndMintAmount} ETH/ChUSD`);
+          break;
+      }
+
+      toast.success(
+        `${actionType} of ${actionAmount} ${actionType === "burn" || actionType === "mint" ? "ChUSD" : "ETH"} completed successfully!`,
+      );
+
+      // Close modal after a short delay to show success message
+      setTimeout(() => {
+        handleCloseActionModal();
+      }, 1500);
+    } catch (error: any) {
+      console.error("Action error:", error);
+      const errorMessage = error.message || "Action failed. Please try again.";
+      setActionError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
   // Show different content based on user interaction status
   if (hasInteracted) {
     // Active user - show Pikachu slider content
@@ -267,7 +449,10 @@ const Home: NextPage = () => {
         <div className="container mx-auto px-4 py-4 max-w-md sm:max-w-lg md:max-w-2xl flex-1 flex flex-col">
           {/* Pikachu Mood Display */}
           <div className="mb-4 flex-1 flex items-center justify-center">
-            <div className="relative w-full max-w-sm aspect-square bg-yellow-100 rounded-2xl shadow-lg overflow-hidden">
+            <button
+              onClick={() => setShowActionModal(true)}
+              className="relative w-full max-w-sm aspect-square bg-yellow-100 rounded-2xl shadow-lg overflow-hidden cursor-pointer transition-transform duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-yellow-300 focus:ring-opacity-50"
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-yellow-200 to-yellow-300">
                 {/* Pikachu Mood Image - fills entire card */}
                 <div className="relative w-full h-full">
@@ -280,7 +465,7 @@ const Home: NextPage = () => {
                   />
                 </div>
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Slider Container */}
@@ -320,6 +505,221 @@ const Home: NextPage = () => {
             <p className="text-xs text-gray-600">Powered by ⚡ Pikachu Moods & Scaffold-ETH 2</p>
           </div>
         </div>
+
+        {/* Action Modal */}
+        {showActionModal && (
+          <div
+            className="fixed inset-0 bg-gradient-to-br from-yellow-100 to-yellow-200 bg-opacity-95 flex items-center justify-center p-4 z-50"
+            onClick={handleCloseActionModal}
+          >
+            <div
+              className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-2xl max-w-lg w-full mx-4 transform transition-all duration-300 animate-in fade-in-0 zoom-in-95"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={handleCloseActionModal}
+                className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">DeFi Actions</h2>
+
+              {/* Tab Navigation */}
+              <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-6">
+                <button
+                  onClick={() => {
+                    setActiveTab("withdraw");
+                    setActionType(null);
+                    setActionError(null);
+                    setActionSuccess(null);
+                    setBurnAndWithdrawAmount("0.1");
+                    setDepositAndMintAmount("0.1");
+                  }}
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                    activeTab === "withdraw" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  💸 Withdraw
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveTab("refill");
+                    setActionType(null);
+                    setActionError(null);
+                    setActionSuccess(null);
+                    setBurnAndWithdrawAmount("0.1");
+                    setDepositAndMintAmount("0.1");
+                  }}
+                  className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+                    activeTab === "refill" ? "bg-white text-gray-900 shadow-sm" : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  💰 Refill
+                </button>
+              </div>
+
+              {/* Balance Overview */}
+              <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3">Your Balances</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">ETH Balance:</span>
+                    <span className="font-medium">{balance?.formatted || "0.0000"} ETH</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">ChUSD Balance:</span>
+                    <span className="font-medium">
+                      {chUsdBalance ? (Number(chUsdBalance) / 1e18).toFixed(4) : "0.0000"} ChUSD
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Deposited ETH:</span>
+                    <span className="font-medium">
+                      {depositedEth ? (Number(depositedEth) / 1e18).toFixed(4) : "0.0000"} ETH
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Minted ChUSD:</span>
+                    <span className="font-medium">
+                      {mintedChUsd ? (Number(mintedChUsd) / 1e18).toFixed(4) : "0.0000"} ChUSD
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tab Content */}
+              {activeTab === "withdraw" ? (
+                // Withdraw Tab - Burn and Withdraw Form
+                <div className="space-y-6">
+                  {/* Amount Input */}
+                  <div>
+                    <label htmlFor="burnAndWithdrawAmount" className="block text-sm font-medium text-gray-700 mb-2">
+                      Amount (ChUSD/ETH)
+                    </label>
+                    <input
+                      id="burnAndWithdrawAmount"
+                      type="text"
+                      value={burnAndWithdrawAmount}
+                      onChange={handleBurnAndWithdrawAmountChange}
+                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent outline-none transition-all duration-200 ${
+                        actionError
+                          ? "border-red-300 bg-red-50 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-500"
+                      }`}
+                      placeholder="0.1"
+                    />
+                  </div>
+
+                  {/* Error Message */}
+                  {actionError && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <span className="mr-1">⚠️</span>
+                      {actionError}
+                    </p>
+                  )}
+
+                  {/* Success Message */}
+                  {actionSuccess && (
+                    <p className="mt-2 text-sm text-green-600 flex items-center">
+                      <span className="mr-1">✅</span>
+                      {actionSuccess}
+                    </p>
+                  )}
+
+                  {/* Action Button */}
+                  <button
+                    onClick={() => {
+                      setActionType("burnAndWithdraw");
+                      handleAction();
+                    }}
+                    disabled={
+                      !burnAndWithdrawAmount ||
+                      parseFloat(burnAndWithdrawAmount) <= 0 ||
+                      isActionLoading ||
+                      !!actionError
+                    }
+                    className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 disabled:transform-none disabled:cursor-not-allowed"
+                  >
+                    {isActionLoading ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      "🔥💸 Burn & Withdraw"
+                    )}
+                  </button>
+                </div>
+              ) : (
+                // Refill Tab - Deposit and Mint Form
+                <div className="space-y-6">
+                  {/* Amount Input */}
+                  <div>
+                    <label htmlFor="depositAndMintAmount" className="block text-sm font-medium text-gray-700 mb-2">
+                      Amount (ETH/ChUSD)
+                    </label>
+                    <input
+                      id="depositAndMintAmount"
+                      type="text"
+                      value={depositAndMintAmount}
+                      onChange={handleDepositAndMintAmountChange}
+                      className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:border-transparent outline-none transition-all duration-200 ${
+                        actionError
+                          ? "border-red-300 bg-red-50 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-500"
+                      }`}
+                      placeholder="0.1"
+                    />
+                  </div>
+
+                  {/* Error Message */}
+                  {actionError && (
+                    <p className="mt-2 text-sm text-red-600 flex items-center">
+                      <span className="mr-1">⚠️</span>
+                      {actionError}
+                    </p>
+                  )}
+
+                  {/* Success Message */}
+                  {actionSuccess && (
+                    <p className="mt-2 text-sm text-green-600 flex items-center">
+                      <span className="mr-1">✅</span>
+                      {actionSuccess}
+                    </p>
+                  )}
+
+                  {/* Action Button */}
+                  <button
+                    onClick={() => {
+                      setActionType("depositAndMint");
+                      handleAction();
+                    }}
+                    disabled={
+                      !depositAndMintAmount || parseFloat(depositAndMintAmount) <= 0 || isActionLoading || !!actionError
+                    }
+                    className="w-full bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200 disabled:transform-none disabled:cursor-not-allowed"
+                  >
+                    {isActionLoading ? (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Processing...</span>
+                      </div>
+                    ) : (
+                      "💰🪙 Deposit & Mint"
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {/* Info Text */}
+              <div className="text-center mt-4">
+                <p className="text-xs text-gray-500">Production Ready - Real contract interactions</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Custom Slider Styles */}
         <style jsx>{`
