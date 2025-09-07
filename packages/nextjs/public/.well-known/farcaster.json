@@ -16,8 +16,8 @@
     "tagline": "Make Pikachu happy! "
   },
   "accountAssociation": {
-    "header": "",
-    "payload": "",
-    "signature": ""
+    "header": "eyJmaWQiOjQzMTIsInR5cGUiOiJjdXN0b2R5Iiwia2V5IjoiMHg2MmI3RTg1RTczMzQyNWY4ODQ4Yjg0MzM3NTk5MzAyNzA4N2JiZTA5In0",
+    "payload": "eyJkb21haW4iOiJwaWthY2h1c2QudmVyY2VsLmFwcCJ9",
+    "signature": "MHgyOGM0OWMyMWM2YmMxZTNhMDYzZmMwYmZmMWVlMmUxYTZkYzUwYTFiOGNmM2MxOGM2MjA3N2ExYWIwYTRiNDBiNzc4YzUzNDRlZTFlN2EzMGY5MjIwNzlkODliNTg5MzZiOGJlZDFjNjAwYjZkM2NjNWY0ZmUwMGMzNTU4OTg0NTFi"
   }
 }
